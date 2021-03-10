@@ -24,11 +24,17 @@ Diese Anweisungen helfen dir dabei das Projekt auf einem lokalen gerät lauffäh
 
 ### Instalation
 XAMPP öffnen und Apache + MySQL starten
+
 Admin Bereich von PHPMyAdmin öffnen und Datenbank.sql ausführen damit die Datenbank erstellt wird.
+
 In der Datenbank einen beliebigen benutzer erstellen.
+
 auf page-login.php die 59. Zeile auskommentieren und die 60. wieder reinhollen.
+
 Config.php Datei anpassen.
+
 Nach dem erfolgreichen Einlogen einen neuen benutzer anlegen und die 59. Zeile wieder reinhollen und die 60. auskommentieren.
+
 Dies geschieht um das neue benutzerpasswort mit einem HASH zu verschlüsseln. 
 
 # Projekt noch in Arbeit
