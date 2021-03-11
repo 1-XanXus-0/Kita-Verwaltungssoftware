@@ -6,10 +6,13 @@ require("assets/php/checkLogInState.php");
 // Include config file
 require_once "assets/php/config.php";
 
-//$sql = "SELECT Kind FROM kinderdaten";
+
+$tabellenName = $_POST['dbName'];
+
+
 
 // Query to get columns from table
-$query = $link->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'mydb' AND TABLE_NAME = 'Kinderdaten'");
+$query = $link->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'mydb' AND TABLE_NAME = '$tabellenName'");
 
 
 $outputColNames = '';
@@ -23,7 +26,7 @@ while($row = $query->fetch_assoc()){
 $columnArr = array_column($result, 'COLUMN_NAME');
 
 
-$sql = "SELECT * FROM Kinderdaten";
+$sql = "SELECT * FROM $tabellenName";
 $result = mysqli_query($link, $sql);
 
 foreach($columnArr as $key => $var)
@@ -36,7 +39,7 @@ if (mysqli_num_rows($result) > 0) {
     while($row = mysqli_fetch_assoc($result)) {
         foreach($columnArr as $key => $var)
         {
-            $output .= "<td>" . $row["$var"] . "</td>";
+            $output .= "<td onclick=''" . $row["$var"] . "</td>";
         }  
         $output .= "</tr>";
     }
@@ -163,6 +166,14 @@ if (mysqli_num_rows($result) > 0) {
 			<div class="main-content">
 				<div class="container-fluid">
 					<h3 class="page-title">Kinderdaten</h3>
+                    <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                        <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Kinderdaten">Kinderdaten</button>
+                        <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Elterndaten">Elterndaten</button>
+                        <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Gruppendaten">Gruppendaten</button>
+                        <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Mitarbeiterdaten">Mitarbeiterdaten</button>
+                        <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Standortdaten">Standortdaten</button>
+					</form>
+                        
 							<!-- TABLE HOVER -->
 							<div class="panel">
 								<div class="panel-heading">
