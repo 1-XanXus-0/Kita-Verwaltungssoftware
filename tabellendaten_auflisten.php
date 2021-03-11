@@ -7,9 +7,12 @@ require("assets/php/checkLogInState.php");
 require_once "assets/php/config.php";
 
 
-$tabellenName = $_POST['dbName'];
-
-
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $tabellenName = $_POST['dbName'];
+} else{
+    $tabellenName = "Kinderdaten";
+}
+   
 
 // Query to get columns from table
 $query = $link->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'mydb' AND TABLE_NAME = '$tabellenName'");
@@ -122,10 +125,7 @@ if (mysqli_num_rows($result) > 0) {
 								<li><a href="pw-reset.php"><i class="lnr lnr-cog"></i> <span>PW Ändern</span></a></li>
 								<li><a href="assets/php/logout.php"><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
 							</ul>
-						</li>
-						<!-- <li>
-							<a class="update-pro" href="https://www.themeineed.com/downloads/klorofil-pro-bootstrap-admin-dashboard-template/?utm_source=klorofil&utm_medium=template&utm_campaign=KlorofilPro" title="Upgrade to Pro" target="_blank"><i class="fa fa-rocket"></i> <span>UPGRADE TO PRO</span></a>
-						</li> -->
+						</li>					
 					</ul>
 				</div>
 			</div>
