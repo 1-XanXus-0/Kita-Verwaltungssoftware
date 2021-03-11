@@ -1,4 +1,8 @@
 <?php
+
+// Include logged in state check
+require("assets/php/checkLogInState.php");
+
 // Include config file
 require_once "assets/php/config.php";
  
