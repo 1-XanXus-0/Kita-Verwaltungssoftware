@@ -39,7 +39,7 @@ if (mysqli_num_rows($result) > 0) {
     while($row = mysqli_fetch_assoc($result)) {
         foreach($columnArr as $key => $var)
         {
-            $output .= "<td onclick=''" . $row["$var"] . "</td>";
+            $output .= "<td>" . $row["$var"] . "</td>";
         }  
         $output .= "</tr>";
     }
@@ -165,7 +165,7 @@ if (mysqli_num_rows($result) > 0) {
 			<!-- MAIN CONTENT -->
 			<div class="main-content">
 				<div class="container-fluid">
-					<h3 class="page-title">Kinderdaten</h3>
+					<h3 class="page-title"><?php echo $tabellenName ?></h3>
                     <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Kinderdaten">Kinderdaten</button>
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Elterndaten">Elterndaten</button>
