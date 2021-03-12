@@ -1,6 +1,6 @@
 <?php
 // Login Check
-require("assets/php/checkLogInState.php");
+// require("assets/php/checkLogInState.php");
 // SQL Server Konfiguration
 require_once "assets/php/config.php";
 
@@ -11,7 +11,7 @@ $geb = $geb_err = "";
 $gebort = $gebort_err = "";
 $aufnahme = $aufnahme_err = ""; // default heutiges Datum statt Pflichtfeld?
 $konfession = $konfession_err = "";
-$nationalität = $nationalität_err = "";
+$herkunft = $herkunft_err = "";
 $strasse = $strasse_err = "";
 $hausnr = $hausnr_err = "";
 $plz = $plz_err = "";
@@ -32,58 +32,54 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
  
     // Validations
     if(empty(trim($_POST["vorname"]))) {$vorname_err = "Bitte Vorname eingeben.";
-    } elseif(strlen(trim($_POST["vorname"])) > 45) {$vorname_err = "Maximal 45 Zeichen";
+    // } elseif(strlen(trim($_POST["vorname"])) = 45) {$vorname_err = "Maximal 45 Zeichen";
     } else {$vorname = trim($_POST["vorname"]); }
     
     if(empty(trim($_POST["nachname"]))) {$nachname_err = "Bitte Nachname eingeben.";
-    } elseif(strlen(trim($_POST["nachname"])) > 45) {$vorname_err = "Maximal 45 Zeichen";
+    // } elseif(strlen(trim($_POST["nachname"])) = 45) {$nachname_err = "Maximal 45 Zeichen";
     } else {$nachname = trim($_POST["nachname"]); }
 
     if(empty(trim($_POST["geb"]))) {$geb_err = "Bitte Geburtsdatum angeben.";
     } else {$geb = trim($_POST["geb"]); }
 
     if(empty(trim($_POST["gebort"]))) {$gebort_err = "Bitte Geburtsort eingeben.";
-    } elseif(strlen(trim($_POST["gebort"])) > 45) {$vorname_err = "Maximal 45 Zeichen";
+    // } elseif(strlen(trim($_POST["gebort"])) = 45) {$gebort_err = "Maximal 45 Zeichen";
     } else {$gebort = trim($_POST["gebort"]); }
 
     if(empty(trim($_POST["aufnahme"]))) {$aufnahme_err = "Bitte Aufnahmedatum angeben.";
     } else {$aufnahme = trim($_POST["aufnahme"]); }
 
-    // if(empty(trim($_POST["einschulung"]))) {$gebort_err = "Bitte voraussichtliches Einschulumgsdatum angeben.";
-    // } elseif(strlen(trim($_POST["einschulung"])) > 45) {$vorname_err = "Maximal 45 Zeichen";
-    // } else {$gebort = trim($_POST["einschulung"]); }
+    $einschulung = trim($_POST["einschulung"]);
 
-        // if(empty(trim($_POST["einschulung"]))) {$aufnahme = "DATEETIMW.Eetzt()";
-    // } elseif(strlen(trim($_POST["einschulung"])) > 45z) {$aufname_err = "Maximal 45 Zeichen";
-    // } else {$gebort = trim($_POST["einschulung"]); }
+    if(empty(trim($_POST["aufnahme"]))) {$aufnahme = "DATEETIME.Jetzt()";
+    } else {$aufnahme = trim($_POST["aufnahme"]); }
 
-    if(empty(trim($_POST["nationalität"]))) {$konfession_err = "Bitte Staatsbürgeschaft einngeben.";
-    } elseif(strlen(trim($_POST["nationalität"])) > 5) {$vorname_err = "Maximal 45 Zeichen";
-    } else {$vorname = trim($_POST["nationalität"]); }
+    if(empty(trim($_POST["herkunft"]))) {$herkunft_err = "Bitte Staatsbürgeschaft eingeben.";
+    // } elseif(strlen(trim($_POST["herkunft"])) = 5) {$herkunft = "Maximal 45 Zeichen";
+    } else {$vorname = trim($_POST["herkunft"]); }
 
     if(empty(trim($_POST["konfession"]))) {$konfession_err = "Bitte Konfession eingeben.";
-    } elseif(strlen(trim($_POST["konfession"])) > 5) {$vorname_err = "Maximal 45 Zeichen";
+    // } elseif(strlen(trim($_POST["konfession"])) = 5) {$konfession_err = "Maximal 45 Zeichen";
     } else {$vorname = trim($_POST["konfession"]); }
 
     if(empty(trim($_POST["strasse"]))) {$strasse_err = "Bitte Strassennamen eingeben.";
-    } elseif(strlen(trim($_POST["strasse"])) > 5) {$strasse_err = "Maximal 45 Zeichen";
+    // } elseif(strlen(trim($_POST["strasse"])) = 5) {$strasse_err = "Maximal 45 Zeichen";
     } else {$vorname = trim($_POST["strasse"]); }
 
     if(empty(trim($_POST["hausnr"]))) {$hausnr_err = "Bitte Hausnummr eingeben.";
-    } elseif(strlen(trim($_POST["hausnr"])) > 5) {$hausnr_err = "Maximal 45 Zeichen";
+    // } elseif(strlen(trim($_POST["hausnr"])) = 5) {$hausnr_err = "Maximal 45 Zeichen";
     } else {$vorname = trim($_POST["hausnr"]); }
 
     if(empty(trim($_POST["plz"]))) {$plz_err = "Bitte PLZ eingeben.";
-    } elseif(strlen(trim($_POST["plz"])) > 45) {$plz = "Maximal 5 Zeichen";
+    // } elseif(strlen(trim($_POST["plz"])) = 45) {$plz = "Maximal 5 Zeichen";
     } else {$gebort = trim($_POST["plz"]); }
 
     if(empty(trim($_POST["ort"]))) {$ort_err = "Bitte Wohnort eingeben.";
-    } elseif(strlen(trim($_POST["ort"])) > 45) {$ort = "Maximal 45 Zeichen";
+    // } elseif(strlen(trim($_POST["ort"])) = 45) {$ort = "Maximal 45 Zeichen";
     } else {$gebort = trim($_POST["ort"]); }
-}
 
     // Check input errors before inserting in database
-    if(empty($vorname_err) && empty($nachname_err) && empty($geb_err) && empty($gebort_err) && empty($aufnahme_err) && empty($konfession_err) && empty($nationalität_err) && empty($deutsch_err) && empty($strasse) && empty($hausnr_err) && empty($plz_err) && empty($ort_err) && empty($tel_err))
+    if(empty($vorname_err) && empty($nachname_err) && empty($geb_err) && empty($gebort_err) && empty($aufnahme_err) && empty($konfession_err) && empty($herkunft_err) && empty($deutsch_err) && empty($strasse_err) && empty($hausnr_err) && empty($plz_err) && empty($ort_err) && empty($tel_err))
     
     {    
         // Prepare an insert statement
@@ -92,7 +88,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
  
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sssssssssssssssssi", $param_vorname, $param_nachname, $param_geschlecht, $param_geb, $param_einschulung, $param_aufnahme, $param_gruppe, $param_gebort, $param_konfession, $param_nationalität, $param_deutsch, $param_strasse, $param_hausnr, $param_tel, $param_plz, $param_ort, $param_standort)
+            mysqli_stmt_bind_param($stmt, "sssssssssssssssssi", $param_vorname, $param_nachname, $param_geschlecht, $param_geb, $param_einschulung, $param_aufnahme, $param_gruppe, $param_gebort, $param_konfession, $param_herkunft, $param_deutsch, $param_strasse, $param_hausnr, $param_tel, $param_plz, $param_ort, $param_standort);
             
             // Set parameters
             $param_vorname = $vorname;
@@ -102,7 +98,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_geburtsort = $gebort;
             $param_aufnahme = $aufnahme;
             $param_konfession = $konfession;
-            $param_nationalität = $nationalität;
+            $param_herkunft = $herkunft;
             $param_sprichtDeutsch = $deutsch;
             $param_strasse = $strasse;
             $param_hausnr = $hausnr;
@@ -130,6 +126,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Close connection
     mysqli_close($link);
 
+}
 ?>
 
 
@@ -137,7 +134,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <html lang="en">
 
 <head>
-	<title>Tables | Klorofil - Free Bootstrap Dashboard Template</title>
+	<title>Neues Kind anlegen</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -249,115 +246,107 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		<div class="main">
 			<!-- MAIN CONTENT -->
 			<div class="main-content">
-				<div class="container-fluid">
-					<h3 class="page-title">Kinderdaten</h3>
-							<!-- TABLE HOVER -->
-							<div class="panel">
-								<div class="panel-heading">
-									<h3 class="panel-title">Neues Kind anlegen</h3>
-								</div>
-								<div class="form">
-                  <form class="form-validate form-horizontal " id="register_form" method="get" action="">
-                    <div class="form-group ">
+                <h3 class="page-title">Neues Kind anlegen</h3>
+					<!-- <div class="panel">
+						<div class="panel-heading">
+							<h3 class="panel-title">Neues Kind anlegen</h3>
+						</div> -->
+				<div class="form">
+                    <form class="form-validate form-horizontal " id="register_form" method="get" action="">
+                    <div class="form-group">
                       <label for="vorname" class="control-label col-lg-2">Vorname<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class=" form-control" id="vorname" name="vorname" type="text" />
+                        <input class="form-control" id="vorname" name="vorname" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group">
                       <label for="nachname" class="control-label col-lg-2">Nachname<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class=" form-control" id="nachname" name="nachname" type="text" />
+                        <input class="form-control" id="nachname" name="nachname" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
-                      <label for="agree" class="control-label col-lg-2 col-sm-3">Besitzt Penis<span class="required">*</span></label>
+                    <div class="form-group">
+                      <label for="geschlecht" class="control-label col-lg-2 col-sm-3">Geschlecht?<span class="required">*</span></label>
                       <div class="col-lg-10 col-sm-9">
                         <input type="checkbox" style="width: 20px" class="checkbox form-control" id="geschlecht" name="geschlecht" />
                       </div>
                     </div>
-                    <div class="form-group ">
-                      <label for="address" class="control-label col-lg-2">Geburtsdatum<span class="required">*</span></label>
+                    <div class="form-group">
+                      <label for="geb" class="control-label col-lg-2">Geburtsdatum<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class=" form-control" id="geb" name="geb" type="text" />
+                        <input class="form-control" id="geb" name="geb" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
-                      <label for="username" class="control-label col-lg-2">Geburtsort<span class="required">*</span></label>
+                    <div class="form-group">
+                      <label for="gebort" class="control-label col-lg-2">Geburtsort<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="gebort" name="gebort" type="text" />
+                        <input class="form-control" id="gebort" name="gebort" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
-                      <label for="confirm_password" class="control-label col-lg-2">Konfession<span class="required">*</span></label>
+                    <div class="form-group">
+                      <label for="konfession" class="control-label col-lg-2">Konfession<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="konfession" name="konfession" type="text" />
+                        <input class="form-control" id="konfession" name="konfession" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
-                      <label for="email" class="control-label col-lg-2">Staatsbürgerschaft<span class="required">*</span></label>
+                    <div class="form-group">
+                      <label for="herkunft" class="control-label col-lg-2">Staatsbürgerschaft<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="nationaität" name="nationalität" type="text" />
+                        <input class="form-control" id="herkunft" name="herkunft" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
-                      <label for="agree" class="control-label col-lg-2 col-sm-3">Vorrangig gesprochene Sprache Deutsch?<span class="required">*</span></label>
+                    <div class="form-group">
+                      <label for="deutsch" class="control-label col-lg-2 col-sm-3">Vorrangig gesprochene Sprache Deutsch?<span class="required">*</span></label>
                       <div class="col-lg-10 col-sm-9">
                         <input type="checkbox" style="width: 20px" class="checkbox form-control" id="deutsch" name="deutsch" />
                       </div>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group">
                       <label for="email" class="control-label col-lg-2">Straße<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="strasse" name="strasse" type="text" />
+                        <input class="form-control" id="strasse" name="strasse" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group">
                       <label for="email" class="control-label col-lg-2">Hausnummer<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="hausnr" name="hausnr" type="text" />
+                        <input class="form-control" id="hausnr" name="hausnr" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group">
                       <label for="email" class="control-label col-lg-2">PLZ<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="plz" name="plz" type="text" />
+                        <input class="form-control" id="plz" name="plz" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group">
                       <label for="email" class="control-label col-lg-2">Ort<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="ort" name="ort" type="text" />
+                        <input class="form-control" id="ort" name="ort" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group">
                       <label for="email" class="control-label col-lg-2">Telefon<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="tel" name="tel" type="text" />
+                        <input class="form-control" id="tel" name="tel" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group">
                       <label for="password" class="control-label col-lg-2">Aufnahmedatum<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="aufnahme" name="aufnahme" type="text" />
+                        <input class="form-control" id="aufnahme" name="aufnahme" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group">
                       <label for="password" class="control-label col-lg-2">Voraussichtliches Einschulungsdatum<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="einschulung" name="einschulung" type="text" />
+                        <input class="form-control" id="einschulung" name="einschulung" type="text" />
                       </div>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group">
                       <label for="password" class="control-label col-lg-2">Gruppenname<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control " id="gruppe" name="gruppe" type="text" />
-                      </div>
-                    </div>
-                    <div class="form-group ">
-                      <label for="agree" class="control-label col-lg-2 col-sm-3">Agree to Our Policy <span class="required">*</span></label>
-                      <div class="col-lg-10 col-sm-9">
-                        <input type="checkbox" style="width: 20px" class="checkbox form-control" id="agree" name="agree" />
+                        <input class="form-control" id="gruppe" name="gruppe" type="text" />
                       </div>
                     </div>
                     <div class="form-group">
@@ -368,9 +357,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     </div>
                   </form>
                 </div>
-							</div>
-							<!-- END TABLE HOVER -->
-				</div>
 			</div>
 			<!-- END MAIN CONTENT -->
 		</div>
