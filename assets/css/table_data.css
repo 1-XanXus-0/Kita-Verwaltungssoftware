@@ -1,0 +1,16 @@
+.panel-body {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.fancy-checkbox {
+    display: inline-block;
+    padding-inline: 10px;
+}
+
+.filter {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
