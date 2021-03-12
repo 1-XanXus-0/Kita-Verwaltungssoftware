@@ -1,6 +1,6 @@
 <?php
 // Login Check
-// require("assets/php/checkLogInState.php");
+require("assets/php/checkLogInState.php");
 // SQL Server Konfiguration
 require_once "assets/php/config.php";
 
@@ -83,12 +83,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     
     {    
         // Prepare an insert statement
-        $sql = "INSERT INTO `mydb`.`Kinderdaten` (KindID, Nachname, Vorname, Geschlecht, Geburtsdatum, Einschulung, Aufnahme, Gruppe, Geburtsort, Konfession, Herkunftsland, SprichtDeutsch, Strasse, Hausnummer, Telefon, PLZ, Ort, Standortdaten_StandortID)
-                VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `mydb`.`Kinderdaten` (Nachname, Vorname, Geschlecht, Geburtsdatum, Einschulung, Aufnahme, Gruppe, Geburtsort, Konfession, Herkunftsland, SprichtDeutsch, Strasse, Hausnummer, Telefon, PLZ, Ort, Standortdaten_StandortID)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
  
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sssssssssssssssssi", $param_vorname, $param_nachname, $param_geschlecht, $param_geb, $param_einschulung, $param_aufnahme, $param_gruppe, $param_gebort, $param_konfession, $param_herkunft, $param_deutsch, $param_strasse, $param_hausnr, $param_tel, $param_plz, $param_ort, $param_standort);
+            mysqli_stmt_bind_param($stmt, "ssssssssssssssssi", $param_vorname, $param_nachname, $param_geschlecht, $param_geb, $param_einschulung, $param_aufnahme, $param_gruppe, $param_gebort, $param_konfession, $param_herkunft, $param_deutsch, $param_strasse, $param_hausnr, $param_tel, $param_plz, $param_ort, $param_standort);
             
             // Set parameters
             $param_vorname = $vorname;
@@ -142,6 +142,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" href="assets/vendor/linearicons/style.css">
+    <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap-datepicker.standalone.css">
 	<!-- MAIN CSS -->
 	<link rel="stylesheet" href="assets/css/main.css">
 	<!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
@@ -218,7 +219,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			<div class="sidebar-scroll">
 				<nav>
 					<ul class="nav">
-						<li><a href="index.php" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="index.php" class=""><i class="lnr lnr-home"></i> <span>Startseite</span></a></li>
+						<li><a href="tabellendaten_auflisten.php" class=""><i class="lnr lnr-dice"></i> <span>Kinderdaten</span></a></li>
+						<li><a href="kind_neu.php" class="active"><i class="lnr lnr-users"></i> <span>Kind hinzufügen</span></a></li>
 						<li><a href="elements.html" class=""><i class="lnr lnr-code"></i> <span>Elements</span></a></li>
 						<li><a href="charts.html" class=""><i class="lnr lnr-chart-bars"></i> <span>Charts</span></a></li>
 						<li><a href="panels.html" class=""><i class="lnr lnr-cog"></i> <span>Panels</span></a></li>
@@ -233,7 +236,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 								</ul>
 							</div>
 						</li>
-						<li><a href="tabellendaten_auflisten.php" class="active"><i class="lnr lnr-dice"></i> <span>Kinderdaten</span></a></li>
+						<li><a href="tabellendaten_auflisten.php" class=""><i class="lnr lnr-dice"></i> <span>Kinderdaten</span></a></li>
 						<li><a href="typography.html" class=""><i class="lnr lnr-text-format"></i> <span>Typography</span></a></li>
 						<li><a href="icons.html" class=""><i class="lnr lnr-linearicons"></i> <span>Icons</span></a></li>
                         <li><a href="Benutzer_Anlegen.php" class=""><i class="lnr lnr-user"></i> <span>Benutzer Anlegen</span></a></li>
@@ -252,17 +255,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 							<h3 class="panel-title">Neues Kind anlegen</h3>
 						</div> -->
 				<div class="form">
-                    <form class="form-validate form-horizontal " id="register_form" method="get" action="">
-                    <div class="form-group">
+                    <form class="form-validate form-horizontal " id="register_form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                    <div class="form-group <?php echo (!empty($vorname_err)) ? 'has-error' : ''; ?>">
                       <label for="vorname" class="control-label col-lg-2">Vorname<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control" id="vorname" name="vorname" type="text" />
+                        <input class="form-control" id="vorname" name="vorname" type="text" value="<?php echo $vorname; ?>">
+                        <span class="help-block"><?php echo $vorname_err; ?></span>
                       </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group <?php echo (!empty($nachname_err)) ? 'has-error' : ''; ?>">
                       <label for="nachname" class="control-label col-lg-2">Nachname<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control" id="nachname" name="nachname" type="text" />
+                        <input class="form-control" id="nachname" name="nachname" type="text" value="<?php echo $nachname; ?>">
+                        <span class="help-block"><?php echo $nachname_err; ?></span>
                       </div>
                     </div>
                     <div class="form-group">
@@ -273,26 +278,30 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     </div>
                     <div class="form-group">
                       <label for="geb" class="control-label col-lg-2">Geburtsdatum<span class="required">*</span></label>
-                      <div class="col-lg-10">
-                        <input class="form-control" id="geb" name="geb" type="text" />
+                      <div class="input-group date" data-provide="datepicker">
+                        <input class="datepicker" id="geb" name="geb" type="text" data-date-format="yyyy/mm/dd">
+                        <span class="glyphicon glyphicon-th"><?php echo $geb_err; ?></span>
                       </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group <?php echo (!empty($gebort_err)) ? 'has-error' : ''; ?>">
                       <label for="gebort" class="control-label col-lg-2">Geburtsort<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control" id="gebort" name="gebort" type="text" />
+                        <input class="form-control" id="gebort" name="gebort" type="text" value="<?php echo $gebort; ?>">
+                        <span class="help-block"><?php echo $gebort_err; ?></span>
                       </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group <?php echo (!empty($konfession_err)) ? 'has-error' : ''; ?>">
                       <label for="konfession" class="control-label col-lg-2">Konfession<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control" id="konfession" name="konfession" type="text" />
+                        <input class="form-control" id="konfession" name="konfession" type="text" value="<?php echo $konfession; ?>">
+                        <span class="help-block"><?php echo $konfession_err; ?></span>
                       </div>
                     </div>
-                    <div class="form-group">
-                      <label for="herkunft" class="control-label col-lg-2">Staatsbürgerschaft<span class="required">*</span></label>
+                    <div class="form-group <?php echo (!empty($herkunft_err)) ? 'has-error' : ''; ?>">
+                      <label for="herkunft" class="control-label col-lg-2">Nationalität<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control" id="herkunft" name="herkunft" type="text" />
+                        <input class="form-control" id="herkunft" name="herkunft" type="text" value="<?php echo $herkunft; ?>">
+                        <span class="help-block"><?php echo $herkunft_err; ?></span>
                       </div>
                     </div>
                     <div class="form-group">
@@ -301,52 +310,58 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         <input type="checkbox" style="width: 20px" class="checkbox form-control" id="deutsch" name="deutsch" />
                       </div>
                     </div>
-                    <div class="form-group">
-                      <label for="email" class="control-label col-lg-2">Straße<span class="required">*</span></label>
+                    <div class="form-group <?php echo (!empty($strasse_err)) ? 'has-error' : ''; ?>">
+                      <label for="strasse" class="control-label col-lg-2">Straße<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control" id="strasse" name="strasse" type="text" />
+                        <input class="form-control" id="strasse" name="strasse" type="text" value="<?php echo $strasse; ?>">
+                        <span class="help-block"><?php echo $strasse_err; ?></span>
+                      </div>
+                    </div>
+                    <div class="form-group <?php echo (!empty($hausnr_err)) ? 'has-error' : ''; ?>">
+                      <label for="hausnr" class="control-label col-lg-2">Hausnummer<span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input class="form-control" id="hausnr" name="hausnr" type="text" value="<?php echo $hausnr; ?>">
+                        <span class="help-block"><?php echo $hausnr_err; ?></span>
+                      </div>
+                    </div>
+                    <div class="form-group <?php echo (!empty($plz_err)) ? 'has-error' : ''; ?>">
+                      <label for="plz" class="control-label col-lg-2">Postleitzahl<span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input class="form-control" id="plz" name="plz" type="text" value="<?php echo $plz; ?>">
+                        <span class="help-block"><?php echo $plz_err; ?></span>
+                      </div>
+                    </div>
+                    <div class="form-group <?php echo (!empty($ort_err)) ? 'has-error' : ''; ?>">
+                      <label for="ort" class="control-label col-lg-2">Ort<span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input class="form-control" id="ort" name="ort" type="text" value="<?php echo $ort; ?>">
+                        <span class="help-block"><?php echo $ort_err; ?></span>
+                      </div>
+                    </div>
+                    <div class="form-group <?php echo (!empty($tel_err)) ? 'has-error' : ''; ?>">
+                      <label for="tel" class="control-label col-lg-2">Telefonnr<span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input class="form-control" id="tel" name="tel" type="text" value="<?php echo $tel; ?>">
+                        <span class="help-block"><?php echo $tel_err; ?></span>
+                      </div>
+                    </div>
+                    <div class="form-group <?php echo (!empty($aufnahme_err)) ? 'has-error' : ''; ?>">
+                      <label for="aufnahme" class="control-label col-lg-2">Aufnahmedatum<span class="required">*</span></label>
+                      <div class="col-lg-10">
+                        <input class="form-control" id="aufnahme" name="aufnahme" type="text" value="<?php echo $aufnahme; ?>">
+                        <span class="help-block"><?php echo $aufnahme_err; ?></span>
                       </div>
                     </div>
                     <div class="form-group">
-                      <label for="email" class="control-label col-lg-2">Hausnummer<span class="required">*</span></label>
+                      <label for="einschulung" class="control-label col-lg-2">Voraussichtliches Einschulungsdatum<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control" id="hausnr" name="hausnr" type="text" />
+                        <input class="form-control" id="einschulung" name="einschulung" type="text" value="<?php echo $einschulung; ?>">
                       </div>
                     </div>
                     <div class="form-group">
-                      <label for="email" class="control-label col-lg-2">PLZ<span class="required">*</span></label>
+                      <label for="standort" class="control-label col-lg-2">Standort<span class="required">*</span></label>
                       <div class="col-lg-10">
-                        <input class="form-control" id="plz" name="plz" type="text" />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="email" class="control-label col-lg-2">Ort<span class="required">*</span></label>
-                      <div class="col-lg-10">
-                        <input class="form-control" id="ort" name="ort" type="text" />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="email" class="control-label col-lg-2">Telefon<span class="required">*</span></label>
-                      <div class="col-lg-10">
-                        <input class="form-control" id="tel" name="tel" type="text" />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="password" class="control-label col-lg-2">Aufnahmedatum<span class="required">*</span></label>
-                      <div class="col-lg-10">
-                        <input class="form-control" id="aufnahme" name="aufnahme" type="text" />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="password" class="control-label col-lg-2">Voraussichtliches Einschulungsdatum<span class="required">*</span></label>
-                      <div class="col-lg-10">
-                        <input class="form-control" id="einschulung" name="einschulung" type="text" />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="password" class="control-label col-lg-2">Gruppenname<span class="required">*</span></label>
-                      <div class="col-lg-10">
-                        <input class="form-control" id="gruppe" name="gruppe" type="text" />
+                        <input class="form-control" id="standort" name="standort" type="text" value="<?php echo $standort; ?>">
                       </div>
                     </div>
                     <div class="form-group">
@@ -374,6 +389,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	<script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script src="assets/vendor/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 	<script src="assets/scripts/klorofil-common.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap-datepicker.js"></script>
 </body>
 
 </html>
