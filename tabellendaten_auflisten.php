@@ -12,6 +12,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 } else{
     $tabellenName = "Kinderdaten";
 }
+
+
    
 
 // Query to get columns from table
@@ -20,6 +22,10 @@ $query = $link->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE 
 
 $outputColNames = '';
 $output = '<tr>';
+$outputCheckBox = '';
+$checkedColArr = array();
+$isChecked = 'checked';
+
 
 while($row = $query->fetch_assoc()){
     $result[] = $row;
@@ -28,11 +34,26 @@ while($row = $query->fetch_assoc()){
 // Array of all column names
 $columnArr = array_column($result, 'COLUMN_NAME');
 
+  
+
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+	if(!empty($_POST['check_list'])){	
+	// Loop to store values of individual checked checkbox.
+	foreach($_POST['check_list'] as $selected) {
+		array_push($checkedColArr, $selected);
+		}
+	}
+	else{
+		$checkedColArr = $columnArr;
+	}	
+}
 
 $sql = "SELECT * FROM $tabellenName";
 $result = mysqli_query($link, $sql);
 
-foreach($columnArr as $key => $var)
+foreach($checkedColArr as $key => $var)
 {
     $outputColNames .= "<th>" .$var . "</th>";
 }   
@@ -40,14 +61,25 @@ foreach($columnArr as $key => $var)
 if (mysqli_num_rows($result) > 0) {
     // output data of each row
     while($row = mysqli_fetch_assoc($result)) {
-        foreach($columnArr as $key => $var)
+        foreach($checkedColArr as $key => $var)
         {
             $output .= "<td>" . $row["$var"] . "</td>";
         }  
         $output .= "</tr>";
     }
-    
 } 
+
+// Creating the Checkboxres
+foreach($columnArr as $key => $var)
+{
+	if(in_array("$var", $checkedColArr))
+	{
+		$isChecked = 'checked';
+	}else{
+		$isChecked = '';
+	}
+	$outputCheckBox .= "<label class='fancy-checkbox'><input type='checkbox' name='check_list[]' value='$var' $isChecked><span>" .$var ."</span></label>";
+}
 
 ?>
 
@@ -151,7 +183,7 @@ if (mysqli_num_rows($result) > 0) {
 								</ul>
 							</div>
 						</li>
-						<li><a href="tabellendaten_auflisten.php" class="active"><i class="lnr lnr-dice"></i> <span>Kinderdaten</span></a></li>
+						<li><a href="tabellendaten_auflisten.php" class="active"><i class="lnr lnr-dice"></i> <span>Daten</span></a></li>
 						<li><a href="typography.html" class=""><i class="lnr lnr-text-format"></i> <span>Typography</span></a></li>
 						<li><a href="icons.html" class=""><i class="lnr lnr-linearicons"></i> <span>Icons</span></a></li>
                         <li><a href="Benutzer_Anlegen.php" class=""><i class="lnr lnr-user"></i> <span>Benutzer Anlegen</span></a></li>
@@ -166,14 +198,18 @@ if (mysqli_num_rows($result) > 0) {
 			<div class="main-content">
 				<div class="container-fluid">
 					<h3 class="page-title"><?php echo $tabellenName ?></h3>
+					<!-- TABLE SELECTION -->
                     <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Kinderdaten">Kinderdaten</button>
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Elterndaten">Elterndaten</button>
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Gruppendaten">Gruppendaten</button>
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Mitarbeiterdaten">Mitarbeiterdaten</button>
-                        <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Standortdaten">Standortdaten</button>
+                        <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Standortdaten">Standortdaten</button>						
 					</form>
-                        
+                    <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+						<?php echo $outputCheckBox; ?>
+						<button type="submit" name="dbName" class="btn btn-primary btn-lg" value="<?php echo $tabellenName; ?>">Filtern</button>
+					</form>
 							<!-- TABLE HOVER -->
 							<div class="panel">
 								<div class="panel-heading">
@@ -183,7 +219,7 @@ if (mysqli_num_rows($result) > 0) {
 									<table class="table table-hover">
 										<thead>
 											<tr>
-                                                <?php echo $outputColNames; ?>
+                                                <?php echo $outputColNames;?>
 											</tr>
 										</thead>
 										<tbody>
