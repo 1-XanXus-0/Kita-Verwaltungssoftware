@@ -255,7 +255,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 							<h3 class="panel-title">Neues Kind anlegen</h3>
 						</div> -->
 				<div class="form">
-                    <form class="form-validate form-horizontal " id="register_form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                    <form class="form-validate form-horizontal " id="register_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <div class="form-group <?php echo (!empty($vorname_err)) ? 'has-error' : ''; ?>">
                       <label for="vorname" class="control-label col-lg-2">Vorname<span class="required">*</span></label>
                       <div class="col-lg-10">
@@ -270,12 +270,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         <span class="help-block"><?php echo $nachname_err; ?></span>
                       </div>
                     </div>
-                    <div class="form-group">
-                      <label for="geschlecht" class="control-label col-lg-2 col-sm-3">Geschlecht?<span class="required">*</span></label>
-                      <div class="col-lg-10 col-sm-9">
-                        <input type="checkbox" style="width: 20px" class="checkbox form-control" id="geschlecht" name="geschlecht" />
-                      </div>
-                    </div>
+                        <label class="fancy-radio">
+						<input name="geschlecht" value="M" type="radio">
+						<span>männlich</span>
+					</label>
+					<label class="fancy-radio">
+						<input name="geschlecht" value="W" type="radio">
+						<span>weiblich</span>
+					</label>
                     <div class="form-group">
                       <label for="geb" class="control-label col-lg-2">Geburtsdatum<span class="required">*</span></label>
                       <div class="input-group date" data-provide="datepicker">
@@ -354,8 +356,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     </div>
                     <div class="form-group">
                       <label for="einschulung" class="control-label col-lg-2">Voraussichtliches Einschulungsdatum<span class="required">*</span></label>
-                      <div class="col-lg-10">
+                      <div class="input-group date" data-provide="datepicker">
                         <input class="form-control" id="einschulung" name="einschulung" type="text" value="<?php echo $einschulung; ?>">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
                       </div>
                     </div>
                     <div class="form-group">
