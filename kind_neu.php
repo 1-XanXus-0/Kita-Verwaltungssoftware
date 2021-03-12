@@ -1,6 +1,6 @@
 <?php
 // Login Check
-// require("assets/php/checkLogInState.php");
+require("assets/php/checkLogInState.php");
 // SQL Server Konfiguration
 require_once "assets/php/config.php";
 
