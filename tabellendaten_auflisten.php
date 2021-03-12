@@ -25,6 +25,8 @@ $output = '<tr>';
 $outputCheckBox = '';
 $checkedColArr = array();
 $isChecked = 'checked';
+$count = 0;
+$whereStmt = '';
 
 
 while($row = $query->fetch_assoc()){
@@ -33,7 +35,6 @@ while($row = $query->fetch_assoc()){
 
 // Array of all column names
 $columnArr = array_column($result, 'COLUMN_NAME');
-
   
 
 
@@ -50,7 +51,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	}	
 }
 
-$sql = "SELECT * FROM $tabellenName";
+$sql = "SELECT * FROM $tabellenName $whereStmt";
 $result = mysqli_query($link, $sql);
 
 foreach($checkedColArr as $key => $var)
@@ -72,14 +73,26 @@ if (mysqli_num_rows($result) > 0) {
 // Creating the Checkboxres
 foreach($columnArr as $key => $var)
 {
-	if(in_array("$var", $checkedColArr))
+	if(in_array("$var", $checkedColArr) || empty($checkedColArr))
 	{
 		$isChecked = 'checked';
 	}else{
 		$isChecked = '';
+	}		
+	if($count == 6)
+	{
+		$outputCheckBox .= "</div>";
+		$count = 0;
 	}
-	$outputCheckBox .= "<label class='fancy-checkbox'><input type='checkbox' name='check_list[]' value='$var' $isChecked><span>" .$var ."</span></label>";
+	if($count == 0)
+	{
+		$outputCheckBox .= "<div class='row'>";
+	}
+	$count = $count + 1;
+	$outputCheckBox .= "<div class='col-md-1'><label class='fancy-checkbox'><input type='checkbox' name='check_list[]' value='$var' $isChecked><span>" .$var ."</span></label></div>";
 }
+if($count != 6 || $count != 0)
+	$outputCheckBox .= "</div>";
 
 ?>
 
@@ -97,8 +110,7 @@ foreach($columnArr as $key => $var)
 	<link rel="stylesheet" href="assets/vendor/linearicons/style.css">
 	<!-- MAIN CSS -->
 	<link rel="stylesheet" href="assets/css/main.css">
-	<!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
-	<link rel="stylesheet" href="assets/css/demo.css">
+	<link rel="stylesheet" href="assets/css/table_data.css">
 	<!-- GOOGLE FONTS -->
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
 	<!-- ICONS -->
@@ -202,14 +214,35 @@ foreach($columnArr as $key => $var)
                     <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Kinderdaten">Kinderdaten</button>
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Elterndaten">Elterndaten</button>
-                        <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Gruppendaten">Gruppendaten</button>
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Mitarbeiterdaten">Mitarbeiterdaten</button>
                         <button type="submit" name="dbName" class="btn btn-primary btn-lg" value="Standortdaten">Standortdaten</button>						
 					</form>
-                    <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-						<?php echo $outputCheckBox; ?>
-						<button type="submit" name="dbName" class="btn btn-primary btn-lg" value="<?php echo $tabellenName; ?>">Filtern</button>
-					</form>
+					<!-- PANEL NO PADDING -->
+							<div class="panel">
+								<div class="panel-heading">
+									<h5 class="panel-title">Filter Optionen</h3>
+									<div class="right">
+										<button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+									</div>
+								</div>
+								<div class="panel-body no-padding">
+									<div class="padding-top-10">
+									<form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+									<div class="filter">
+										<div class='col-md-10'>
+											<?php echo $outputCheckBox; ?>
+										</div>
+										<div class='col-md-10'>
+											<?php  ?>
+										</div>
+									</div>
+										<button type="submit" name="dbName" class="btn btn-primary btn-block" value="<?php echo $tabellenName; ?>">Filtern</button>
+									</form>
+									</div>
+								</div>
+							</div>
+							<!-- END PANEL NO PADDING -->
+                    
 							<!-- TABLE HOVER -->
 							<div class="panel">
 								<div class="panel-heading">
