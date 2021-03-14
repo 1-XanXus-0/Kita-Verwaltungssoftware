@@ -37,7 +37,7 @@ while($row = $query->fetch_assoc()){
 $columnArr = array_column($result, 'COLUMN_NAME');
   
 
-
+// Check which Checkboxes are Checked
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 	if(!empty($_POST['check_list'])){	
@@ -49,8 +49,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	else{
 		$checkedColArr = $columnArr;
 	}	
+
 }
 
+// Generating table header 
 $sql = "SELECT * FROM $tabellenName $whereStmt";
 $result = mysqli_query($link, $sql);
 

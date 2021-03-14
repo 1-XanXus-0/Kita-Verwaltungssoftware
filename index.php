@@ -94,7 +94,6 @@ require("assets/php/checkLogInState.php");
 				<nav>
 					<ul class="nav">
 						<li><a href="index.php" class="active"><i class="lnr lnr-home"></i> <span>Startseite</span></a></li>
-						<li><a href="tabellendaten_auflisten.php" class=""><i class="lnr lnr-dice"></i> <span>Kinderdaten</span></a></li>
 						<li><a href="kind_neu.php" class=""><i class="lnr lnr-users"></i> <span>Kind hinzufügen</span></a></li>
 						<li><a href="elements.html" class=""><i class="lnr lnr-code"></i> <span>Elements</span></a></li>
 						<li><a href="charts.html" class=""><i class="lnr lnr-chart-bars"></i> <span>Charts</span></a></li>
