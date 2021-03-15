@@ -1,4 +1,4 @@
-.panel-body {
+.tabellen {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
@@ -9,8 +9,7 @@
     padding-inline: 10px;
 }
 
-.filter {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+.fancy-radio {
+    display: inline-block;
 }
+
