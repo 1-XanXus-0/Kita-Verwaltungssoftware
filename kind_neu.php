@@ -50,7 +50,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
 	if(empty($vorname_err) && empty($nachname_err) && empty($geburtsdatum_err) && empty($geburtsort_err) && empty($aufnahmedatum_err) 
 	&& empty($konfession_err) && empty($Nationalität_err) && empty($strasse_err) && empty($hausnummer_err) 
-	&& empty($plz_err) && empty($ort_err) && empty($tel_err))   
+	&& empty($plz_err) && empty($ort_err) && empty($telefon_err))   
     { 
         // Prepare an insert statement
         $sql = "INSERT INTO kinderdaten (KindID, Nachname, Vorname, Geschlecht, Geburtsdatum, Einschulung,
