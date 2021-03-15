@@ -9,16 +9,16 @@ require_once "assets/php/config.php";
 // Define variables and initialize with empty values
 $vorname = $vorname_err = "";
 $nachname = $nachname_err = "";
-$geb = $geb_err = "";
-$gebort = $gebort_err = "";
-$aufnahme = $aufnahme_err = ""; // default heutiges Datum statt Pflichtfeld?
+$geburtsdatum = $geburtsdatum_err = "";
+$geburtsort = $geburtsort_err = "";
+$aufnahmedatum = $aufnahmedatum_err = ""; // default heutiges Datum statt Pflichtfeld?
 $konfession = $konfession_err = "";
-$herkunft = $herkunft_err = "";
+$nationalität = $nationalität_err = "";
 $strasse = $strasse_err = "";
-$hausnr = $hausnr_err = "";
+$hausnummer = $hausnummer_err = "";
 $plz = $plz_err = "";
 $ort = $ort_err = "";
-$tel = $tel_err = "";
+$telefon = $telefon_err = "";
 
 // Variablendeklaration (Dropdowns)
 $geschlecht = "";
@@ -30,8 +30,8 @@ $einschulung = "";
 $gruppe = "";
 
 // Variable Names Array
-$valueArr = array("vorname", "nachname", "geschlecht", "geb", "gebort", "aufnahme", "konfesstion",
-    "herkunft", "deutsch", "strasse", "hausnr", "plz", "ort", "tel", "einschulung", "gruppe", "standort");
+$valueArr = array("vorname", "nachname", "geschlecht", "geburtsdatum", "geburtsort", "aufnahmedatum", "konfession",
+    "nationalität", "deutsch", "strasse", "hausnummer", "plz", "ort", "telefon", "einschulung", "gruppe", "standort");
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -42,14 +42,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		if(isset($_POST["$var"]))
 		{
 			if(empty(trim($_POST["$var"])) && $var != "geschlecht" && $var != "deutsch" && $var != "standort" && $var != "einschulung" && $var != "gruppe"){
-			${$var . "_err"} = "Bitte geben sie $var ein.";     
+			${$var . "_err"} = "Bitte geben sie " . ucfirst($var) . " ein.";     
 			} else{
 				${"$var"} = trim($_POST["$var"]);
 			}
 		}	
     }
-	if(empty($vorname_err) && empty($nachname_err) && empty($geb_err) && empty($gebort_err) && empty($aufnahme_err) 
-	&& empty($konfession_err) && empty($herkunft_err) && empty($strasse_err) && empty($hausnr_err) 
+	if(empty($vorname_err) && empty($nachname_err) && empty($geburtsdatum_err) && empty($geburtsort_err) && empty($aufnahmedatum_err) 
+	&& empty($konfession_err) && empty($Nationalität_err) && empty($strasse_err) && empty($hausnummer_err) 
 	&& empty($plz_err) && empty($ort_err) && empty($tel_err))   
     { 
         // Prepare an insert statement
@@ -65,25 +65,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "ssssssssssssssssi", $param_vorname, $param_nachname,
-             $param_geschlecht, $param_geb, $param_einschulung, $param_aufnahme, $param_gruppe,
-              $param_gebort, $param_konfession, $param_herkunft, $param_deutsch, $param_strasse,
-               $param_hausnr, $param_tel, $param_plz, $param_ort, $param_standort);
+             $param_geschlecht, $param_geburtsdatum, $param_einschulung, $param_aufnahmedatum, $param_gruppe,
+              $param_geburtsort, $param_konfession, $param_nationalität, $param_deutsch, $param_strasse,
+               $param_hausnummer, $param_telefon, $param_plz, $param_ort, $param_standort);
             
             // Set parameters
             $param_vorname = $vorname;
             $param_nachname = $nachname;
             $param_geschlecht = $geschlecht;
-            $param_geb = $geb;
-            $param_gebort = $gebort;
-            $param_aufnahme = $aufnahme;
+            $param_geburtsdatum = $geburtsdatum;
+            $param_geburtsort = $geburtsort;
+            $param_aufnahmedatum = $aufnahmedatum;
             $param_konfession = $konfession;
-            $param_herkunft = $herkunft;
+            $param_nationalität = $nationalität;
             $param_deutsch = $deutsch;
             $param_strasse = $strasse;
-            $param_hausnr = $hausnr;
+            $param_hausnummer = $hausnummer;
             $param_plz = $plz;
             $param_ort = $ort;
-            $param_tel = $tel;
+            $param_telefon = $telefon;
             $param_einschulung = $einschulung;
             $param_gruppe = $gruppe;
             $param_standort = $standort;
@@ -145,9 +145,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 						<span class="input-group-btn"><button type="button" class="btn btn-primary">Go</button></span>
 					</div>
 				</form>
-				<div class="navbar-btn navbar-btn-right">
-					<a class="btn btn-success update-pro" href="https://www.themeineed.com/downloads/klorofil-pro-bootstrap-admin-dashboard-template/?utm_source=klorofil&utm_medium=template&utm_campaign=KlorofilPro" title="Upgrade to Pro" target="_blank"><i class="fa fa-rocket"></i> <span>UPGRADE TO PRO</span></a>
-				</div>
+				
 				<div id="navbar-menu">
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
@@ -240,12 +238,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 										<span class="help-block"><?php echo (!empty($nachname_err)) ? $nachname_err : "<br>"; ?></span>
                                       
                                         <span>Geburtsdatum</span>
-							            <input type="text" id="geb" class="form-control" value="<?php echo $geb; ?>">
-										<span class="help-block"><?php echo (!empty($geb_err)) ? $geb_err : "<br>"; ?></span>
+							            <input type="text" name="geburtsdatum" class="form-control" value="<?php echo $geburtsdatum; ?>">
+										<span class="help-block"><?php echo (!empty($geburtsdatum_err)) ? $geburtsdatum_err : "<br>"; ?></span>
                                         
                                         <span>Geburtsort</span>
-							            <input type="text" name="gebort" class="form-control" value="<?php echo $gebort; ?>">
-										<span class="help-block"><?php echo (!empty($gebort_err)) ? $gebort_err : "<br>"; ?></span>
+							            <input type="text" name="geburtsort" class="form-control" value="<?php echo $geburtsort; ?>">
+										<span class="help-block"><?php echo (!empty($geburtsort_err)) ? $geburtsort_err : "<br>"; ?></span>
                                         
                                         <span>Gruppe</span>
 							            <input type="text" name="gruppe" class="form-control" value="<?php echo $gruppe; ?>">
@@ -280,13 +278,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 									</select>
 									<span class="help-block"><br></span>
                                     
-                                    <span>Aufnahme</span>
-							        <input type="text" name="aufnahme" class="form-control" value="<?php echo $aufnahme; ?>">
-									<span class="help-block"><?php echo (!empty($aufnahme_err)) ? $aufnahme_err : "<br>"; ?></span>
+                                    <span>Aufnahmedatum</span>
+							        <input type="text" name="aufnahmedatum" class="form-control" value="<?php echo $aufnahmedatum; ?>">
+									<span class="help-block"><?php echo (!empty($aufnahmedatum_err)) ? $aufnahmedatum_err : "<br>"; ?></span>
                                     
                                     <span>Nationalität</span>
-							        <input type="text" name="herkunft" class="form-control" value="<?php echo $herkunft; ?>">
-									<span class="help-block"><?php echo (!empty($herkunft_err)) ? $herkunft_err : "<br>"; ?></span>
+							        <input type="text" name="nationalität" class="form-control" value="<?php echo $nationalität; ?>">
+									<span class="help-block"><?php echo (!empty($nationalität_err)) ? $nationalität_err : "<br>"; ?></span>
                                                                         
                                 </div>
                             </div>
@@ -302,8 +300,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 </div>
                                 <div class="col-md-4">
                                     <span>Hausnummer</span>
-                                    <input type="text" name="hausnr" class="form-control" value="<?php echo $hausnr; ?>">
-									<span class="help-block"><?php echo (!empty($hausnr_err)) ? $hausnr_err : "<br>"; ?></span>
+                                    <input type="text" name="hausnummer" class="form-control" value="<?php echo $hausnummer; ?>">
+									<span class="help-block"><?php echo (!empty($hausnummer_err)) ? $hausnummer_err : "<br>"; ?></span>
 
                                     <span>Ort</span>
 							        <input type="text" name="ort" class="form-control" value="<?php echo $ort; ?>">
@@ -311,8 +309,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 </div>
                                 <div class="col-md-4">
                                     <span>Telefon</span>
-                                    <input type="text" name="tel" class="form-control" value="<?php echo $tel; ?>">
-									<span class="help-block"><?php echo (!empty($tel_err)) ? $tel_err : "<br>"; ?></span>
+                                    <input type="text" name="telefon" class="form-control" value="<?php echo $telefon; ?>">
+									<span class="help-block"><?php echo (!empty($telefon_err)) ? $telefon_err : "<br>"; ?></span>
 
                                     <span>Standort</span>
                                     <select class="form-control" name="standort">
