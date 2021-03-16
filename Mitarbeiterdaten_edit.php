@@ -108,7 +108,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
          
-        if($stmt = mysqli_prepare($link, $sql)){
+        if($stmt = mysqli_prepare($link, $sql) && isset($_POST["dbName"])){
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "ssssssssssssisssssssii", $param_nachname, $param_vorname,
              $param_geburtsname, $param_geburtsdatum, $param_geschlecht, $param_geburtsort, $param_familienstand,
@@ -154,6 +154,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             mysqli_stmt_close($stmt);
         }
 	}
+
+    if(isset($_POST["delete"]))
+    {
+        $sql = "DELETE FROM $tabellenName WHERE MitarbeiterID = '$tabellenID'";
+
+        if($stmt = mysqli_prepare($link, $sql))
+        {
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+               
+                header("location: tabellendaten_auflisten.php");
+				exit();
+
+            } else{
+                echo "Etwas ist schief gelaufen.";
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
+    }
     
     // Close connection
     mysqli_close($link);
@@ -403,7 +424,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 </div>
 					        </div>
                             <br>
-                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
+                            <div class="row">
+						        <div class="col-md-6">
+                                    <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
+                                 </div>
+                                <div class="col-md-6">
+                                    <button type="submit" name="delete" class="btn btn-primary btn-block" value="submit">Löschen</button>
+                                </div>
+                            </div>
                         </form>
 						</div>
 					</div>
