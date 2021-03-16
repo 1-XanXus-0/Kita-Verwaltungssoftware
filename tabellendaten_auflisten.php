@@ -8,20 +8,17 @@ require_once "assets/php/config.php";
 
 $redirectLocation = "";
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+	
 	if(!empty($_POST['dbName']))
 	{
-		$tabellenName = $_POST['dbName'];	
-		$_SESSION["TabellenName"] = $tabellenName;
-		$redirectLocation = $tabellenName . "_edit.php";
-	}
 
-    
+		$tabellenName = $_POST['dbName'];			
+		setcookie("tabellenName",$_POST['dbName'], time()+3600);
+	}
 	
 } else{
     $tabellenName = "Kinderdaten";
-	$_SESSION["TabellenName"] = "Kinderdaten";
-	$_SESSION["ID"] = "KindID";
-	$redirectLocation = "Kinderdaten_edit.php";
+	setcookie("tabellenName", "Kinderdaten", time()+3600);
 }
 
 
@@ -62,17 +59,18 @@ while($row = $query->fetch_assoc()){
 $columnArr = array_column($result, 'COLUMN_NAME');
   
 
-// Check which Checkboxes are Checked
+
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-	if(!empty($_POST['tableEdit']))
+	if(isset($_POST['tableEdit']))
 	{
-		$_SESSION["TabellenName"] = $tabellenName;
-		$_SESSION["ID"] = $_POST['tableEdit'];
-		header('location: '.$redirectLocation, true, 301);
+		//$_SESSION["TabellenName"] = $tabellenName;
+		setcookie("tabellenID", $_POST['tableEdit'], time()+3600);
+		header("location: ". $_COOKIE["tabellenName"] . "_edit.php", true, 301);
 		exit;
 	}
 
+	// Check which Checkboxes are Checked
 	if(!empty($_POST['check_list'])){	
 	// Loop to store values of individual checked checkbox.
 	foreach($_POST['check_list'] as $selected) {
@@ -83,6 +81,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		$checkedColArr = $columnArr;
 	}
 	
+	//Creating the WHERE statement
 	if($tabellenName == "Standortdaten" && !empty($_POST["bezeichnung"]))
 	{
 		
@@ -106,6 +105,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		$filterValue2 = $_POST['nachname'];
 	}
 
+	//Creating the Sorting Statement
 	if(!empty($_POST["list"]))
 	{
 		if(!empty($_POST["radio"]))
@@ -137,19 +137,23 @@ foreach($checkedColArr as $key => $var)
 {
     $outputColNames .= "<th>" .$var . "</th>";
 }   
+
 // Creating table
 if (mysqli_num_rows($result) > 0) {
     // output data of each row
     while($row = mysqli_fetch_assoc($result)) {
 		$valueDump = $row["$columnArr[0]"];
-
+		
         foreach($checkedColArr as $key => $var)
         {
+			//Creating button to redirect with ID value
 			if($key == 0)
-			    $output .= "<td>
+			{	
+				$output .= "<td>
 								<button type='submit' action='' name='tableEdit' value='$valueDump'>
 								<i class='lnr lnr-pencil'></i>
 								</button>" . $row["$var"] . "</td>";
+			}    
 			else
 				$output .= "<td>" . $row["$var"] . "</td>";
         }  
@@ -194,7 +198,7 @@ if($tabellenName == "Standortdaten")
 {
 	$outputTextField = "<div class='col-md-12'>
 							<span>Standortbezeichnung</span>
-							<input type='text' name='bezeichnung' class='form-control' value='$redirectLocation'>
+							<input type='text' name='bezeichnung' class='form-control' value='$filterValue1'>
 							<span class='help-block'><br></span>
 						</div>";
 }
@@ -245,6 +249,8 @@ $outputComboBox .= "</select>
 					<span class='help-block'><br></span>	
 					</div>";
 
+		
+		echo $_COOKIE["ID"];
 	// Close connection
     mysqli_close($link);
 
@@ -276,7 +282,7 @@ $outputComboBox .= "</select>
 	<!-- WRAPPER -->
 	<div id="wrapper">
 		<!-- NAVBAR -->
-		<nav class="navbar navbar-default navbar-fixed-top">
+		<!-- <nav class="navbar navbar-default navbar-fixed-top">
 			<div class="brand">
 				<a href="index.php"><img src="assets/img/logo_nav.PNG" alt="VP-IT Logo" class="img-responsive logo"></a>
 			</div>
@@ -327,7 +333,7 @@ $outputComboBox .= "</select>
 					</ul>
 				</div>
 			</div>
-		</nav>
+		</nav> -->
 		<!-- END NAVBAR -->
 		<!-- LEFT SIDEBAR -->
 		<div id="sidebar-nav" class="sidebar">
