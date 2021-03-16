@@ -6,11 +6,22 @@ require("assets/php/checkLogInState.php");
 // Include config file
 require_once "assets/php/config.php";
 
-
+$redirectLocation = "";
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $tabellenName = $_POST['dbName'];
+	if(!empty($_POST['dbName']))
+	{
+		$tabellenName = $_POST['dbName'];	
+		$_SESSION["TabellenName"] = $tabellenName;
+		$redirectLocation = $tabellenName . "_edit.php";
+	}
+
+    
+	
 } else{
     $tabellenName = "Kinderdaten";
+	$_SESSION["TabellenName"] = "Kinderdaten";
+	$_SESSION["ID"] = "KindID";
+	$redirectLocation = "Kinderdaten_edit.php";
 }
 
 
@@ -40,6 +51,9 @@ $filterValue1 = '';
 $filterValue2 = '';
 $selectedValue = '';
 
+
+
+
 while($row = $query->fetch_assoc()){
     $result[] = $row;
 }
@@ -50,6 +64,14 @@ $columnArr = array_column($result, 'COLUMN_NAME');
 
 // Check which Checkboxes are Checked
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+	if(!empty($_POST['tableEdit']))
+	{
+		$_SESSION["TabellenName"] = $tabellenName;
+		$_SESSION["ID"] = $_POST['tableEdit'];
+		header('location: '.$redirectLocation, true, 301);
+		exit;
+	}
 
 	if(!empty($_POST['check_list'])){	
 	// Loop to store values of individual checked checkbox.
@@ -101,8 +123,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		}
 		
 	}
-		
-		
+			
 }
 else{
 	$checkedColArr = $columnArr;
@@ -116,13 +137,21 @@ foreach($checkedColArr as $key => $var)
 {
     $outputColNames .= "<th>" .$var . "</th>";
 }   
-
+// Creating table
 if (mysqli_num_rows($result) > 0) {
     // output data of each row
     while($row = mysqli_fetch_assoc($result)) {
+		$valueDump = $row["$columnArr[0]"];
+
         foreach($checkedColArr as $key => $var)
         {
-            $output .= "<td>" . $row["$var"] . "</td>";
+			if($key == 0)
+			    $output .= "<td>
+								<button type='submit' action='' name='tableEdit' value='$valueDump'>
+								<i class='lnr lnr-pencil'></i>
+								</button>" . $row["$var"] . "</td>";
+			else
+				$output .= "<td>" . $row["$var"] . "</td>";
         }  
         $output .= "</tr>";
     }
@@ -165,7 +194,7 @@ if($tabellenName == "Standortdaten")
 {
 	$outputTextField = "<div class='col-md-12'>
 							<span>Standortbezeichnung</span>
-							<input type='text' name='bezeichnung' class='form-control' value='$filterValue1'>
+							<input type='text' name='bezeichnung' class='form-control' value='$redirectLocation'>
 							<span class='help-block'><br></span>
 						</div>";
 }
@@ -215,6 +244,9 @@ $outputComboBox .= "</select>
 					</div>
 					<span class='help-block'><br></span>	
 					</div>";
+
+	// Close connection
+    mysqli_close($link);
 
 ?>
 
@@ -303,7 +335,7 @@ $outputComboBox .= "</select>
 				<nav>
 					<ul class="nav">
 						<li><a href="index.php" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-						<li><a href="elements.html" class=""><i class="lnr lnr-code"></i> <span>Elements</span></a></li>
+						<li><a href="elements.html" class=""><i class="lnr lnr-pencil"></i> <span>Elements</span></a></li>
 						<li><a href="charts.html" class=""><i class="lnr lnr-chart-bars"></i> <span>Charts</span></a></li>
 						<li><a href="panels.html" class=""><i class="lnr lnr-cog"></i> <span>Panels</span></a></li>
 						<li><a href="notifications.html" class=""><i class="lnr lnr-alarm"></i> <span>Notifications</span></a></li>
@@ -387,6 +419,7 @@ $outputComboBox .= "</select>
 								</div>
 								<div class="tabellen">
 								<div class="panel-body">
+								<form class='form-auth-small' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method='POST'>
 									<table class="table table-hover">
 										<thead>
 											<tr>
@@ -396,7 +429,7 @@ $outputComboBox .= "</select>
 										<tbody>
                                             <?php echo $output ?>
 										</tbody>
-									</table>
+									</table></form>
 								</div>
 							</div>
 							</div>
