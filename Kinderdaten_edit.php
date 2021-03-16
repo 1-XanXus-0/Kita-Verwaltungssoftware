@@ -98,51 +98,54 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		
 
 
-         
-        if($stmt = mysqli_prepare($link, $sql) && isset($_POST["dbName"]))
+        if(isset($_POST["dbName"]))
 		{
-			
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssssssssssssssii",  $param_nachname, $param_vorname,
-             $param_geschlecht, $param_geburtsdatum, $param_einschulung, $param_aufnahmedatum, $param_gruppe,
-              $param_geburtsort, $param_konfession, $param_nationalität, $param_deutsch, $param_strasse,
-               $param_hausnummer, $param_telefon, $param_plz, $param_ort, $param_standort, $param_KindID);
-
-    
-
-            // Set parameters
-            $param_vorname = $vorname;
-            $param_nachname = $nachname;
-            $param_geschlecht = $geschlecht;
-            $param_geburtsdatum = $geburtsdatum;
-            $param_geburtsort = $geburtsort;
-            $param_aufnahmedatum = $aufnahmedatum;
-            $param_konfession = $konfession;
-            $param_nationalität = $nationalität;
-            $param_deutsch = $deutsch;
-            $param_strasse = $strasse;
-            $param_hausnummer = $hausnummer;
-            $param_plz = $plz;
-            $param_ort = $ort;
-            $param_telefon = $telefon;
-            $param_einschulung = $einschulung;
-            $param_gruppe = $gruppe;
-            $param_standort = $standort;
-			$param_KindID = $tabellenID;
-            
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-
-                header("location: tabellendaten_auflisten.php");
-				exit();
-
-            } else{
-                echo "Etwas ist schief gelaufen.";
-            }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }	
+			if($stmt = mysqli_prepare($link, $sql))
+			{
+				
+				// Bind variables to the prepared statement as parameters
+				mysqli_stmt_bind_param($stmt, "ssssssssssssssssii",  $param_nachname, $param_vorname,
+				 $param_geschlecht, $param_geburtsdatum, $param_einschulung, $param_aufnahmedatum, $param_gruppe,
+				  $param_geburtsort, $param_konfession, $param_nationalität, $param_deutsch, $param_strasse,
+				   $param_hausnummer, $param_telefon, $param_plz, $param_ort, $param_standort, $param_KindID);
+	
+		
+	
+				// Set parameters
+				$param_vorname = $vorname;
+				$param_nachname = $nachname;
+				$param_geschlecht = $geschlecht;
+				$param_geburtsdatum = $geburtsdatum;
+				$param_geburtsort = $geburtsort;
+				$param_aufnahmedatum = $aufnahmedatum;
+				$param_konfession = $konfession;
+				$param_nationalität = $nationalität;
+				$param_deutsch = $deutsch;
+				$param_strasse = $strasse;
+				$param_hausnummer = $hausnummer;
+				$param_plz = $plz;
+				$param_ort = $ort;
+				$param_telefon = $telefon;
+				$param_einschulung = $einschulung;
+				$param_gruppe = $gruppe;
+				$param_standort = $standort;
+				$param_KindID = $tabellenID;
+				
+				// Attempt to execute the prepared statement
+				if(mysqli_stmt_execute($stmt)){
+	
+					header("location: tabellendaten_auflisten.php");
+					exit();
+	
+				} else{
+					echo "Etwas ist schief gelaufen.";
+				}
+	
+				// Close statement
+				mysqli_stmt_close($stmt);
+			}	
+		} 
+        
 	}
 
 	if(isset($_POST["delete"]))
@@ -196,7 +199,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	<!-- WRAPPER -->
 	<div id="wrapper">
 		<!-- NAVBAR -->
-		<nav class="navbar navbar-default navbar-fixed-top">
+		<!-- <nav class="navbar navbar-default navbar-fixed-top">
 			<div class="brand">
 				<a href="tabellendaten_Auflisten.php"><img src="assets/img/logo_nav.PNG" alt="VP-IT Logo" class="img-responsive logo"></a>
 			</div>
@@ -222,7 +225,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					</ul>
 				</div>
 			</div>
-		</nav>
+		</nav> -->
 		<!-- END NAVBAR -->
 		<!-- LEFT SIDEBAR -->
 		<div id="sidebar-nav" class="sidebar">

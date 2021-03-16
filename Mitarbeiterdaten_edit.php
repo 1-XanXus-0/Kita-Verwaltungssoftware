@@ -107,52 +107,56 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     
 
 
-         
-        if($stmt = mysqli_prepare($link, $sql) && isset($_POST["dbName"])){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssssssssssisssssssii", $param_nachname, $param_vorname,
-             $param_geburtsname, $param_geburtsdatum, $param_geschlecht, $param_geburtsort, $param_familienstand,
-              $param_nationalität, $param_konfession, $param_anrede, $param_strasse, $param_hausnummer,
-               $param_plz, $param_ort, $param_telefon, $param_telefon_Mobil, $param_email, $param_einstelldatum,
-                $param_position, $param_gruppe, $param_standort, $param_MitarbeiterID);
-            
-            // Set parameters
-            $param_nachname = $nachname;
-            $param_vorname = $vorname;
-            $param_geburtsname = $geburtsname;
-            $param_geburtsdatum = $geburtsdatum;
-            $param_geburtsort = $geburtsort;
-            $param_nationalität = $nationalität;
-            $param_konfession = $konfession;
-            $param_strasse = $strasse;
-            $param_hausnummer = $hausnummer;
-            $param_plz = $plz;
-            $param_ort = $ort;
-            $param_telefon = $telefon;
-            $param_telefon_Mobil = $telefon_Mobil;
-            $param_email = $email;
-            $param_einstelldatum = $einstelldatum;
-            $param_geschlecht = $geschlecht;
-            $param_standort = $standort;
-            $param_familienstand = $familienstand;
-            $param_anrede = $anrede;
-            $param_position = $position;
-            $param_gruppe = $gruppe;
-            $param_MitarbeiterID = $tabellenID;
-
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-               
-                header("location: tabellendaten_auflisten.php");
-				exit();
-
-            } else{
-                echo "Etwas ist schief gelaufen.";
-            }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }
+		if(isset($_POST["dbName"]))
+		{
+			if($stmt = mysqli_prepare($link, $sql))
+			{
+				// Bind variables to the prepared statement as parameters
+				mysqli_stmt_bind_param($stmt, "ssssssssssssisssssssii", $param_nachname, $param_vorname,
+				 $param_geburtsname, $param_geburtsdatum, $param_geschlecht, $param_geburtsort, $param_familienstand,
+				  $param_nationalität, $param_konfession, $param_anrede, $param_strasse, $param_hausnummer,
+				   $param_plz, $param_ort, $param_telefon, $param_telefon_Mobil, $param_email, $param_einstelldatum,
+					$param_position, $param_gruppe, $param_standort, $param_MitarbeiterID);
+				
+				// Set parameters
+				$param_nachname = $nachname;
+				$param_vorname = $vorname;
+				$param_geburtsname = $geburtsname;
+				$param_geburtsdatum = $geburtsdatum;
+				$param_geburtsort = $geburtsort;
+				$param_nationalität = $nationalität;
+				$param_konfession = $konfession;
+				$param_strasse = $strasse;
+				$param_hausnummer = $hausnummer;
+				$param_plz = $plz;
+				$param_ort = $ort;
+				$param_telefon = $telefon;
+				$param_telefon_Mobil = $telefon_Mobil;
+				$param_email = $email;
+				$param_einstelldatum = $einstelldatum;
+				$param_geschlecht = $geschlecht;
+				$param_standort = $standort;
+				$param_familienstand = $familienstand;
+				$param_anrede = $anrede;
+				$param_position = $position;
+				$param_gruppe = $gruppe;
+				$param_MitarbeiterID = $tabellenID;
+	
+				// Attempt to execute the prepared statement
+				if(mysqli_stmt_execute($stmt)){
+				   
+					header("location: tabellendaten_auflisten.php");
+					exit();
+	
+				} else{
+					echo "Etwas ist schief gelaufen.";
+				}
+	
+				// Close statement
+				mysqli_stmt_close($stmt);
+			}
+		}
+        
 	}
 
     if(isset($_POST["delete"]))

@@ -65,33 +65,38 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $sql = "UPDATE elterndaten SET Nachname = ?, Vorname = ?, Telefon_Privat = ?, Telefon_Mobil = ?,
          Telefon_Dienst = ?, Email = ? WHERE ElternID = ?";
 
-        if($stmt = mysqli_prepare($link, $sql) && isset($_POST["dbName"])){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssssi", $param_nachname, $param_vorname,
-             $param_privattelefon, $param_mobiltelefon, $param_diensttelefon, $param_email, $param_ElternID);
-            
-            // Set parameters
-            $param_nachname = $nachname;
-            $param_vorname = $vorname;                        
-            $param_privattelefon = $privattelefon;
-            $param_mobiltelefon = $mobiltelefon;
-            $param_diensttelefon = $diensttelefon;
-            $param_email = $email;
-            $param_ElternID = $tabellenID;
-            
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
+		if(isset($_POST["dbName"]))
+		{
+			if($stmt = mysqli_prepare($link, $sql))
+			{
+				// Bind variables to the prepared statement as parameters
+				mysqli_stmt_bind_param($stmt, "ssssssi", $param_nachname, $param_vorname,
+				$param_privattelefon, $param_mobiltelefon, $param_diensttelefon, $param_email, $param_ElternID);
+				
+				// Set parameters
+				$param_nachname = $nachname;
+				$param_vorname = $vorname;                        
+				$param_privattelefon = $privattelefon;
+				$param_mobiltelefon = $mobiltelefon;
+				$param_diensttelefon = $diensttelefon;
+				$param_email = $email;
+				$param_ElternID = $tabellenID;
+				
+				// Attempt to execute the prepared statement
+				if(mysqli_stmt_execute($stmt)){
 
-                header("location: tabellendaten_auflisten.php");
-				exit();
+					header("location: tabellendaten_auflisten.php");
+					exit();
 
-            } else{
-                echo "Etwas ist schief gelaufen.";
-            }
+				} else{
+					echo "Etwas ist schief gelaufen.";
+				}
 
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }
+				// Close statement
+				mysqli_stmt_close($stmt);
+			}
+		}
+        
 	}
 
 	if(isset($_POST["delete"]))

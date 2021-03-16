@@ -74,37 +74,41 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $sql = "UPDATE standortdaten SET Bez_der_Tageseinrichtung = ?, Strasse = ?, Hausnummer = ?, PLZ = ?, Ort = ?, Telefon = ?,
          Faxnummer = ?, Leitung = ?, email = ?, Bundesland = ? WHERE StandortID = ?";
 
-        if($stmt = mysqli_prepare($link, $sql) && isset($_POST["dbName"])){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sssissssssi", $param_bezeichnung, $param_strasse,
-             $param_hausnummer, $param_plz, $param_ort, $param_telefonnummer, $param_faxnummer, $param_leitung, $param_email, $param_bundesland, $param_StandortID);
-            
-            // Set parameters
-            $param_bezeichnung = $bezeichnung;
-            $param_strasse = $strasse;
-            $param_hausnummer = $hausnummer;;
-            $param_plz = $plz;
-            $param_ort = $ort;
-            $param_telefonnummer = $telefonnummer;
-            $param_faxnummer = $faxnummer;
-            $param_leitung = $leitung;
-            $param_email = $email;
-            $param_bundesland = $bundesland;
-            $param_StandortID = $tabellenID;
-
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-  
-                header("location: tabellendaten_auflisten.php");
-				exit();
-
-            } else{
-                echo "Etwas ist schief gelaufen.";
-            }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }
+		if(isset($_POST["dbName"]))
+		{
+			if($stmt = mysqli_prepare($link, $sql)){
+				// Bind variables to the prepared statement as parameters
+				mysqli_stmt_bind_param($stmt, "sssissssssi", $param_bezeichnung, $param_strasse,
+				 $param_hausnummer, $param_plz, $param_ort, $param_telefonnummer, $param_faxnummer, $param_leitung, $param_email, $param_bundesland, $param_StandortID);
+				
+				// Set parameters
+				$param_bezeichnung = $bezeichnung;
+				$param_strasse = $strasse;
+				$param_hausnummer = $hausnummer;;
+				$param_plz = $plz;
+				$param_ort = $ort;
+				$param_telefonnummer = $telefonnummer;
+				$param_faxnummer = $faxnummer;
+				$param_leitung = $leitung;
+				$param_email = $email;
+				$param_bundesland = $bundesland;
+				$param_StandortID = $tabellenID;
+	
+				// Attempt to execute the prepared statement
+				if(mysqli_stmt_execute($stmt)){
+	  
+					header("location: tabellendaten_auflisten.php");
+					exit();
+	
+				} else{
+					echo "Etwas ist schief gelaufen.";
+				}
+	
+				// Close statement
+				mysqli_stmt_close($stmt);
+			}
+		}
+        
 	}
 
 	if(isset($_POST["delete"]))
