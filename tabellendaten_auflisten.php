@@ -6,12 +6,11 @@ require("assets/php/checkLogInState.php");
 // Include config file
 require_once "assets/php/config.php";
 
-$redirectLocation = "";
+
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 	
 	if(!empty($_POST['dbName']))
 	{
-
 		$tabellenName = $_POST['dbName'];			
 		setcookie("tabellenName",$_POST['dbName'], time()+3600);
 	}
@@ -48,7 +47,7 @@ $filterValue1 = '';
 $filterValue2 = '';
 $selectedValue = '';
 
-
+$redirectLocation = "";
 
 
 while($row = $query->fetch_assoc()){
@@ -64,7 +63,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 	if(isset($_POST['tableEdit']))
 	{
-		//$_SESSION["TabellenName"] = $tabellenName;
 		setcookie("tabellenID", $_POST['tableEdit'], time()+3600);
 		header("location: ". $_COOKIE["tabellenName"] . "_edit.php", true, 301);
 		exit;
@@ -216,7 +214,6 @@ else {
 }
 
 //Creating ComboBox for sorting
-
 foreach($columnArr as $key => $var)
 {
 	if(!empty($_POST['list']))
@@ -250,9 +247,8 @@ $outputComboBox .= "</select>
 					</div>";
 
 		
-		echo $_COOKIE["ID"];
-	// Close connection
-    mysqli_close($link);
+// Close connection
+mysqli_close($link);
 
 ?>
 
