@@ -54,7 +54,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     { 
         // Prepare an insert statement
         $sql = "INSERT INTO kinderdaten (KindID, Nachname, Vorname, Geschlecht, Geburtsdatum, Einschulung,
-         Aufnahme, Gruppe, Geburtsort, Konfession, Nationalität, vorrgesprochene_sprache_Deutsch,
+         Aufnahme, Gruppe, Geburtsort, Konfession, Nationalität, Spricht_Deutsch,
           Strasse, Hausnummer, Telefon, PLZ, Ort, Standortdaten_StandortID)
         VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -90,8 +90,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-                //header("location: kind_neu_test.php");
+
+                header("location: tabellendaten_auflisten.php");
+				exit();
+				
             } else{
                 echo "Etwas ist schief gelaufen.";
             }
@@ -292,7 +294,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		<div class="clearfix"></div>
 		<footer>
 			<div class="container-fluid">
-				<p class="copyright">&copy; 2021 <a href="VP-IT.com" target="_blank">VP-IT</a>. All Rights Reserved.</p>
+				<p class="copyright">&copy; 2021 <a href="https://github.com/1-XanXus-0/Kita-Verwaltungssoftware" target="_blank">VP-IT</a>. All Rights Reserved.</p>
 			</div>
 		</footer>
 	</div>

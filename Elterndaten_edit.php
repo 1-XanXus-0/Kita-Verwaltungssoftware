@@ -260,7 +260,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		<div class="clearfix"></div>
 		<footer>
 			<div class="container-fluid">
-				<p class="copyright">&copy; 2021 <a href="VP-IT.com" target="_blank">VP-IT</a>. All Rights Reserved.</p>
+				<p class="copyright">&copy; 2021 <a href="https://github.com/1-XanXus-0/Kita-Verwaltungssoftware" target="_blank">VP-IT</a>. All Rights Reserved.</p>
 			</div>
 		</footer>
 	</div>
