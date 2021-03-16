@@ -65,7 +65,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $sql = "UPDATE elterndaten SET Nachname = ?, Vorname = ?, Telefon_Privat = ?, Telefon_Mobil = ?,
          Telefon_Dienst = ?, Email = ? WHERE ElternID = ?";
 
-        if($stmt = mysqli_prepare($link, $sql)){
+        if($stmt = mysqli_prepare($link, $sql) && isset($_POST["dbName"])){
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "ssssssi", $param_nachname, $param_vorname,
              $param_privattelefon, $param_mobiltelefon, $param_diensttelefon, $param_email, $param_ElternID);
@@ -93,6 +93,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             mysqli_stmt_close($stmt);
         }
 	}
+
+	if(isset($_POST["delete"]))
+    {
+        $sql = "DELETE FROM $tabellenName WHERE ElternID = '$tabellenID'";
+
+        if($stmt = mysqli_prepare($link, $sql))
+        {
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+               
+                header("location: tabellendaten_auflisten.php");
+				exit();
+
+            } else{
+                echo "Etwas ist schief gelaufen.";
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
+    }
     
     // Close connection
     mysqli_close($link);
@@ -257,7 +278,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 </div>
                             </div>
                             <br>
-                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
+                            <div class="row">
+						        <div class="col-md-6">
+                                    <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
+                                 </div>
+                                <div class="col-md-6">
+                                    <button type="submit" name="delete" class="btn btn-primary btn-block" value="submit">Löschen</button>
+                                </div>
+                            </div>
                         </form>
 						</div>
 					</div>
