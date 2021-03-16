@@ -18,6 +18,31 @@ $diensttelefon = "";
 
 // Variable Names Array
 $valueArr = array("vorname", "nachname", "mobiltelefon", "privattelefon", "email", "diensttelefon");
+
+if(isset($_COOKIE["tabellenName"]))
+{
+	$tabellenName = $_COOKIE['tabellenName'];
+	$tabellenID = $_COOKIE['tabellenID'];
+}
+
+
+ // Prepare an insert statement
+$sql = "SELECT * FROM $tabellenName WHERE ElternID = '$tabellenID'";
+$result = mysqli_query($link, $sql);
+
+if (mysqli_num_rows($result) > 0) 
+{
+    // output data of each row
+    while($row = mysqli_fetch_assoc($result)) 
+	{
+		$vorname = $row["Vorname"];
+		$nachname = $row["Nachname"];
+		$privattelefon = $row["Telefon_Privat"];
+        $mobiltelefon = $row["Telefon_Mobil"];
+        $diensttelefon = $row["Telefon_Dienst"];
+        $email = $row["Email"];
+	}
+} 
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -37,13 +62,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	if(empty($vorname_err) && empty($nachname_err) && empty($mobiltelefon_err) && empty($privattelefon_err) && empty($email_err))
     { 
         // Prepare an insert statement
-        $sql = "INSERT INTO elterndaten (ElternID, Nachname, Vorname, Telefon_Privat, Telefon_Mobil , Telefon_Dienst , Email)
-        VALUES (default, ?, ?, ?, ?, ?, ?)";
+        $sql = "UPDATE elterndaten SET Nachname = ?, Vorname = ?, Telefon_Privat = ?, Telefon_Mobil = ?,
+         Telefon_Dienst = ?, Email = ? WHERE ElternID = ?";
 
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssss", $param_nachname, $param_vorname,
-             $param_privattelefon, $param_mobiltelefon, $param_diensttelefon, $param_email);
+            mysqli_stmt_bind_param($stmt, "ssssssi", $param_nachname, $param_vorname,
+             $param_privattelefon, $param_mobiltelefon, $param_diensttelefon, $param_email, $param_ElternID);
             
             // Set parameters
             $param_nachname = $nachname;
@@ -52,11 +77,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_mobiltelefon = $mobiltelefon;
             $param_diensttelefon = $diensttelefon;
             $param_email = $email;
+            $param_ElternID = $tabellenID;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-                //header("location: kind_neu_test.php");
+
+                header("location: tabellendaten_auflisten.php");
+				exit();
+
             } else{
                 echo "Etwas ist schief gelaufen.";
             }
@@ -193,7 +221,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					<!-- INPUTS -->
 					<div class="panel">
 						<div class="panel-heading">
-							<h3 class="panel-title">Neuen Vormund anlegen</h3>
+							<h3 class="panel-title"><?php echo $vorname . " "; echo $nachname; ?></h3>
 						</div>
 						<div class="panel-body">
                         <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
@@ -229,7 +257,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 </div>
                             </div>
                             <br>
-                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Neu Anlegen</button>
+                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
                         </form>
 						</div>
 					</div>

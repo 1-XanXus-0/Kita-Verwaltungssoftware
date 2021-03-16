@@ -19,6 +19,37 @@ $email = $email_err = "";
 $bundesland = $bundesland_err = "";
 
 
+if(isset($_COOKIE["tabellenName"]))
+{
+	$tabellenName = $_COOKIE['tabellenName'];
+	$tabellenID = $_COOKIE['tabellenID'];
+}
+
+
+// Prepare an insert statement
+$sql = "SELECT * FROM $tabellenName WHERE StandortID = '$tabellenID'";
+
+$result = mysqli_query($link, $sql);
+
+if (mysqli_num_rows($result) > 0) 
+{
+    // output data of each row
+    while($row = mysqli_fetch_assoc($result)) 
+	{
+		$bezeichnung = $row["Bez_der_Tageseinrichtung"];
+        $strasse = $row["Strasse"];
+        $hausnummer = $row["Hausnummer"];
+        $plz = $row["PLZ"];
+        $ort = $row["Ort"];
+        $telefonnummer = $row["Telefon"];
+        $faxnummer = $row["Faxnummer"];
+        $leitung = $row["Leitung"];
+        $email = $row["email"];
+        $bundesland = $row["Bundesland"];
+	}
+} 
+
+
 // Variable Names Array
 $valueArr = array("bezeichnung", "strasse", "hausnummer", "plz", "ort", "telefonnummer", "faxnummer", "leitung", "email", "bundesland");
  
@@ -40,14 +71,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	if(empty($vorname_err) && empty($nachname_err) && empty($mobiltelefon_err) && empty($privattelefon_err) && empty($email_err))
     { 
         // Prepare an insert statement
-        $sql = "INSERT INTO standortdaten (StandortID , Bez_der_Tageseinrichtung, Strasse, Hausnummer, PLZ  , Ort  , Telefon,
-         Faxnummer, Leitung, email, Bundesland)
-        VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "UPDATE standortdaten SET Bez_der_Tageseinrichtung = ?, Strasse = ?, Hausnummer = ?, PLZ = ?, Ort = ?, Telefon = ?,
+         Faxnummer = ?, Leitung = ?, email = ?, Bundesland = ? WHERE StandortID = ?";
 
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sssissssss", $param_bezeichnung, $param_strasse,
-             $param_hausnummer, $param_plz, $param_ort, $param_telefonnummer, $param_faxnummer, $param_leitung, $param_email, $param_bundesland);
+            mysqli_stmt_bind_param($stmt, "sssissssssi", $param_bezeichnung, $param_strasse,
+             $param_hausnummer, $param_plz, $param_ort, $param_telefonnummer, $param_faxnummer, $param_leitung, $param_email, $param_bundesland, $param_StandortID);
             
             // Set parameters
             $param_bezeichnung = $bezeichnung;
@@ -60,11 +90,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_leitung = $leitung;
             $param_email = $email;
             $param_bundesland = $bundesland;
-            
+            $param_StandortID = $tabellenID;
+
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-                //header("location: kind_neu_test.php");
+  
+                header("location: tabellendaten_auflisten.php");
+				exit();
+
             } else{
                 echo "Etwas ist schief gelaufen.";
             }
@@ -153,9 +186,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 								<li><a href="#"><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
 							</ul>
 						</li>
-						<!-- <li>
-							<a class="update-pro" href="https://www.themeineed.com/downloads/klorofil-pro-bootstrap-admin-dashboard-template/?utm_source=klorofil&utm_medium=template&utm_campaign=KlorofilPro" title="Upgrade to Pro" target="_blank"><i class="fa fa-rocket"></i> <span>UPGRADE TO PRO</span></a>
-						</li> -->
 					</ul>
 				</div>
 			</div>
@@ -201,7 +231,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					<!-- INPUTS -->
 					<div class="panel">
 						<div class="panel-heading">
-							<h3 class="panel-title">Neuen Standort anlegen</h3>
+							<h3 class="panel-title"><?php echo $bezeichnung; ?></h3>
 						</div>
 						<div class="panel-body">
                         <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
@@ -258,7 +288,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 </div>
                             </div>
                             <br>
-                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Neu Anlegen</button>
+                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
                         </form>
 						</div>
 					</div>

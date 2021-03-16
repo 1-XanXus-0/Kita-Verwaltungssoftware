@@ -31,13 +31,13 @@ $gruppe = "";
 
 if(isset($_COOKIE["tabellenName"]))
 {
-	$tabelenName = $_COOKIE['tabellenName'];
-	$tabelenID = $_COOKIE['tabellenID'];
+	$tabellenName = $_COOKIE['tabellenName'];
+	$tabellenID = $_COOKIE['tabellenID'];
 }
 
 
  // Prepare an insert statement
-$sql = "SELECT * FROM $tabelenName WHERE KindID = '$tabelenID'";
+$sql = "SELECT * FROM $tabellenName WHERE KindID = '$tabellenID'";
 $result = mysqli_query($link, $sql);
 
 if (mysqli_num_rows($result) > 0) 
@@ -108,7 +108,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
               $param_geburtsort, $param_konfession, $param_nationalität, $param_deutsch, $param_strasse,
                $param_hausnummer, $param_telefon, $param_plz, $param_ort, $param_standort, $param_KindID);
 
-            echo "hallo";
+    
 
             // Set parameters
             $param_vorname = $vorname;
@@ -128,13 +128,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_einschulung = $einschulung;
             $param_gruppe = $gruppe;
             $param_standort = $standort;
-			$param_KindID = $tabelenID;
+			$param_KindID = $tabellenID;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-				            
+
                 header("location: tabellendaten_auflisten.php");
 				exit();
+
             } else{
                 echo "Etwas ist schief gelaufen.";
             }
