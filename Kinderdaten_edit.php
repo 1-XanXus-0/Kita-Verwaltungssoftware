@@ -29,6 +29,43 @@ $deutsch = "";
 $einschulung = "";
 $gruppe = "";
 
+if(isset($_COOKIE["tabellenName"]))
+{
+	$tabelenName = $_COOKIE['tabellenName'];
+	$tabelenID = $_COOKIE['tabellenID'];
+}
+
+
+ // Prepare an insert statement
+$sql = "SELECT * FROM $tabelenName WHERE KindID = '$tabelenID'";
+$result = mysqli_query($link, $sql);
+
+if (mysqli_num_rows($result) > 0) 
+{
+    // output data of each row
+    while($row = mysqli_fetch_assoc($result)) 
+	{
+		$vorname = $row["Vorname"];
+		$nachname = $row["Nachname"];
+		$geschlecht  = $row["Geschlecht"];
+		$geburtsdatum = $row["Geburtsdatum"];
+		$einschulung = $row["Einschulung"];
+		$aufnahmedatum = $row["Aufnahme"];
+		$gruppe = $row["Gruppe"];
+		$geburtsort = $row["Geburtsort"];
+		$konfession = $row["Konfession"];
+		$nationalität = $row["Nationalität"];
+		$deutsch = $row["Spricht_Deutsch"];
+		$strasse = $row["Strasse"];
+		$hausnummer = $row["Hausnummer"];
+		$telefon = $row["Telefon"];
+		$plz = $row["PLZ"];
+		$ort = $row["Ort"];
+		$standort = $row["Standortdaten_StandortID"];
+	}
+} 
+
+
 // Variable Names Array
 $valueArr = array("vorname", "nachname", "geschlecht", "geburtsdatum", "geburtsort", "aufnahmedatum", "konfession",
     "nationalität", "deutsch", "strasse", "hausnummer", "plz", "ort", "telefon", "einschulung", "gruppe", "standort");
@@ -48,27 +85,31 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			}
 		}	
     }
+
 	if(empty($vorname_err) && empty($nachname_err) && empty($geburtsdatum_err) && empty($geburtsort_err) && empty($aufnahmedatum_err) 
 	&& empty($konfession_err) && empty($Nationalität_err) && empty($strasse_err) && empty($hausnummer_err) 
 	&& empty($plz_err) && empty($ort_err) && empty($telefon_err))   
     { 
         // Prepare an insert statement
-        $sql = "INSERT INTO kinderdaten (KindID, Nachname, Vorname, Geschlecht, Geburtsdatum, Einschulung,
-         Aufnahme, Gruppe, Geburtsort, Konfession, Nationalität, vorrgesprochene_sprache_Deutsch,
-          Strasse, Hausnummer, Telefon, PLZ, Ort, Standortdaten_StandortID)
-        VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "UPDATE Kinderdaten SET Nachname = ?, Vorname = ?, Geschlecht = ?, Geburtsdatum = ?, Einschulung = ?,
+         Aufnahme = ?, Gruppe = ?, Geburtsort = ?, Konfession = ?, Nationalität = ?, Spricht_Deutsch = ?,
+          Strasse = ?, Hausnummer = ?, Telefon = ?, PLZ = ?, Ort = ?, Standortdaten_StandortID = ? WHERE KindID = ?";
 
-    
+		
 
 
          
-        if($stmt = mysqli_prepare($link, $sql)){
+        if($stmt = mysqli_prepare($link, $sql))
+		{
+			
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssssssssssssssi", $param_vorname, $param_nachname,
+            mysqli_stmt_bind_param($stmt, "ssssssssssssssssii",  $param_nachname, $param_vorname,
              $param_geschlecht, $param_geburtsdatum, $param_einschulung, $param_aufnahmedatum, $param_gruppe,
               $param_geburtsort, $param_konfession, $param_nationalität, $param_deutsch, $param_strasse,
-               $param_hausnummer, $param_telefon, $param_plz, $param_ort, $param_standort);
-            
+               $param_hausnummer, $param_telefon, $param_plz, $param_ort, $param_standort, $param_KindID);
+
+            echo "hallo";
+
             // Set parameters
             $param_vorname = $vorname;
             $param_nachname = $nachname;
@@ -87,18 +128,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_einschulung = $einschulung;
             $param_gruppe = $gruppe;
             $param_standort = $standort;
+			$param_KindID = $tabelenID;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-                //header("location: kind_neu_test.php");
+				            
+                header("location: tabellendaten_auflisten.php");
+				exit();
             } else{
                 echo "Etwas ist schief gelaufen.";
             }
 
             // Close statement
             mysqli_stmt_close($stmt);
-        }
+        }	
 	}
     
     // Close connection
@@ -180,13 +223,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 								<li><a href="#"><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
 							</ul>
 						</li>
-						<!-- <li>
-							<a class="update-pro" href="https://www.themeineed.com/downloads/klorofil-pro-bootstrap-admin-dashboard-template/?utm_source=klorofil&utm_medium=template&utm_campaign=KlorofilPro" title="Upgrade to Pro" target="_blank"><i class="fa fa-rocket"></i> <span>UPGRADE TO PRO</span></a>
-						</li> -->
 					</ul>
 				</div>
 			</div>
-		</nav>
+		</nav> 
 		<!-- END NAVBAR -->
 		<!-- LEFT SIDEBAR -->
 		<div id="sidebar-nav" class="sidebar">
@@ -227,7 +267,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					<!-- INPUTS -->
 					<div class="panel">
 						<div class="panel-heading">
-							<h3 class="panel-title">Neues Kind anlegen</h3>
+							<h3 class="panel-title"><?php echo $vorname . " "; echo $nachname; ?></h3>
 						</div>
 						<div class="panel-body">
                         <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
@@ -265,16 +305,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                     
                                     <span>Primäre Sprache Deutsch</span>
 							        <select class="form-control" name="deutsch">
-										<option value="Ja">Ja</option>
-										<option value="Nein">Nein</option>										
+										<option value="Ja" <?php  if($deutsch == "ja") echo "selected"; else echo ""; ?>>Ja</option>
+										<option value="Nein" <?php  if($deutsch == "nein") echo "selected"; else echo ""; ?>>Nein</option>										
 									</select>  
                                     <span class="help-block"><br></span>                                   
                                 </div>
                                 <div class="col-md-4">	
                                     <span>Geschlecht</span>
 							        <select class="form-control" name="geschlecht">
-										<option value="männlich">männlich</option>
-										<option value="weiblich">weiblich</option>										
+										<option value="männlich" <?php  if($geschlecht == "M" || $geschlecht == "mänlich") echo "selected"; else echo ""; ?>>männlich</option>
+										<option value="weiblich" <?php  if($geschlecht == "W" || $geschlecht == "weiblich") echo "selected"; else echo ""; ?>>weiblich</option>										
 									</select>
 									<span class="help-block"><br></span>
                                     
@@ -314,14 +354,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
                                     <span>Standort</span>
                                     <select class="form-control" name="standort">
-										<option value="1">testeinrichtung</option>
-										<option value="2">testeinrichtung2</option>										
+										<option value="1" <?php  if($standort == "1") echo "selected"; else echo ""; ?>>testeinrichtung</option>
+										<option value="2" <?php  if($standort == "2") echo "selected"; else echo ""; ?>>testeinrichtung2</option>										
 									</select>
 									<span class="help-block"><br></span>
                                 </div>
 					        </div>
                             <br>
-                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Neu Anlegen</button>
+                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
                         </form>
 						</div>
 					</div>

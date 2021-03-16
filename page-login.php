@@ -63,8 +63,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 							// Check if Remember me is checked and create a cookie
 							if(isset($_POST['remember_me'])){
 
-							// Set a cookie that expires in 24 hours
-							setcookie("username",$username, time()+3600*24);
+							// Set a cookie that expires in 7 Days
+							setcookie("username",$username, time()+3600*24*7);
 							}
 
                             session_start();

@@ -12,19 +12,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	if(!empty($_POST['dbName']))
 	{
 		$tabellenName = $_POST['dbName'];			
-		setcookie("tabellenName",$_POST['dbName'], time()+3600);
+		setcookie("tabellenName",$_POST['dbName'], time()+3600*8);
 	}
 	
 } else{
     $tabellenName = "Kinderdaten";
-	setcookie("tabellenName", "Kinderdaten", time()+3600);
+	setcookie("tabellenName", "Kinderdaten", time()+3600*8);
 }
 
 
    
 
-// Query to get columns from table
-$query = $link->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'mydb' AND TABLE_NAME = '$tabellenName'");
 
 //output variablen
 $outputColNames = '';
@@ -49,6 +47,9 @@ $selectedValue = '';
 
 $redirectLocation = "";
 
+// Query to get columns from table
+$query = $link->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'mydb' AND TABLE_NAME = '$tabellenName'");
+
 
 while($row = $query->fetch_assoc()){
     $result[] = $row;
@@ -63,7 +64,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 	if(isset($_POST['tableEdit']))
 	{
-		setcookie("tabellenID", $_POST['tableEdit'], time()+3600);
+		setcookie("tabellenID", $_POST['tableEdit'], time()+3600*8);
 		header("location: ". $_COOKIE["tabellenName"] . "_edit.php", true, 301);
 		exit;
 	}
@@ -278,7 +279,7 @@ mysqli_close($link);
 	<!-- WRAPPER -->
 	<div id="wrapper">
 		<!-- NAVBAR -->
-		<!-- <nav class="navbar navbar-default navbar-fixed-top">
+		 <nav class="navbar navbar-default navbar-fixed-top">
 			<div class="brand">
 				<a href="index.php"><img src="assets/img/logo_nav.PNG" alt="VP-IT Logo" class="img-responsive logo"></a>
 			</div>
@@ -329,7 +330,7 @@ mysqli_close($link);
 					</ul>
 				</div>
 			</div>
-		</nav> -->
+		</nav> 
 		<!-- END NAVBAR -->
 		<!-- LEFT SIDEBAR -->
 		<div id="sidebar-nav" class="sidebar">
