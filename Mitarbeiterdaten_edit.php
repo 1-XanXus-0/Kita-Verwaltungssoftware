@@ -34,6 +34,46 @@ $position = "";
 // Variablendeklaration (optionale Felder)
 $gruppe = "";
 
+if(isset($_COOKIE["tabellenName"]))
+{
+	$tabellenName = $_COOKIE['tabellenName'];
+	$tabellenID = $_COOKIE['tabellenID'];
+}
+
+
+ // Prepare an insert statement
+$sql = "SELECT * FROM $tabellenName WHERE MitarbeiterID = '$tabellenID'";
+$result = mysqli_query($link, $sql);
+
+if (mysqli_num_rows($result) > 0) 
+{
+    // output data of each row
+    while($row = mysqli_fetch_assoc($result)) 
+	{
+		$vorname = $row["Vorname"];
+		$nachname = $row["Nachname"];
+		$geschlecht  = $row["Geschlecht"];
+		$geburtsdatum = $row["Geburtsdatum"];
+		$gruppe = $row["Gruppe"];
+		$geburtsort = $row["Geburtsort"];
+		$konfession = $row["Konfession"];
+		$nationalität = $row["Nationalität"];
+		$strasse = $row["Strasse"];
+		$hausnummer = $row["Hausnummer"];
+		$telefon = $row["Telefon"];
+		$plz = $row["PLZ"];
+		$ort = $row["Ort"];
+        $geburtsname = $row["Geburtsname"];
+        $telefon_Mobil = $row["Telefon_Mobil"];
+        $email = $row["Email"];
+        $einstelldatum = $row["Einstelldatum"];
+        $familienstand = $row["Familienstand"];
+        $anrede = $row["Anrede"];
+        $position = $row["Position"];
+		$standort = $row["Standortdaten_StandortID"];
+	}
+} 
+
 // Variable Names Array
 $valueArr = array("nachname", "vorname", "geburtsname", "geburtsdatum", "geschlecht",
 "geburtsort", "familienstand", "nationalität", "konfession", "anrede", "strasse", "hausnummer", "plz", "ort", "telefon",
@@ -60,10 +100,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	&& empty($plz_err) && empty($ort_err) && empty($telefon_err))   
     { 
         // Prepare an insert statement
-        $sql = "INSERT INTO mitarbeiterdaten (MitarbeiterID , Nachname, Vorname, Geburtsname, Geburtsdatum, Geschlecht,
-         Geburtsort, Familienstand, Nationalität, Konfession, Anrede, Strasse, Hausnummer, PLZ, Ort, Telefon,
-         Telefon_Mobil, Email, Einstelldatum, Position, Gruppe, Standortdaten_StandortID)
-        VALUES (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "UPDATE mitarbeiterdaten SET Nachname = ?, Vorname = ?, Geburtsname = ?, Geburtsdatum = ?, Geschlecht = ?,
+         Geburtsort = ?, Familienstand = ?, Nationalität = ?, Konfession = ?, Anrede = ?, Strasse = ?, Hausnummer = ?, PLZ = ?, Ort = ?, Telefon = ?,
+         Telefon_Mobil = ?, Email = ?, Einstelldatum = ?, Position = ?, Gruppe = ?, Standortdaten_StandortID = ? WHERE MitarbeiterID = ?";
 
     
 
@@ -71,11 +110,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
          
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssssssssssisssssssi", $param_nachname, $param_vorname,
+            mysqli_stmt_bind_param($stmt, "ssssssssssssisssssssii", $param_nachname, $param_vorname,
              $param_geburtsname, $param_geburtsdatum, $param_geschlecht, $param_geburtsort, $param_familienstand,
               $param_nationalität, $param_konfession, $param_anrede, $param_strasse, $param_hausnummer,
                $param_plz, $param_ort, $param_telefon, $param_telefon_Mobil, $param_email, $param_einstelldatum,
-                $param_position, $param_gruppe, $param_standort);
+                $param_position, $param_gruppe, $param_standort, $param_MitarbeiterID);
             
             // Set parameters
             $param_nachname = $nachname;
@@ -99,11 +138,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_anrede = $anrede;
             $param_position = $position;
             $param_gruppe = $gruppe;
+            $param_MitarbeiterID = $tabellenID;
 
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-                //header("location: kind_neu_test.php");
+               
+                header("location: tabellendaten_auflisten.php");
+				exit();
+
             } else{
                 echo "Etwas ist schief gelaufen.";
             }
@@ -239,7 +281,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					<!-- INPUTS -->
 					<div class="panel">
 						<div class="panel-heading">
-							<h3 class="panel-title">Neuen Mitarbeiter anlegen</h3>
+							<h3 class="panel-title"><?php echo $vorname . " "; echo $nachname; ?></h3>
 						</div>
 						<div class="panel-body">
                         <form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
@@ -247,8 +289,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 						        <div class="col-md-4">
                                     <span>Anrede</span>	
                                     <select class="form-control" name="anrede">
-										<option value="Herr">Herr</option>
-										<option value="Frau">Frau</option>										
+										<option value="Herr" <?php  if($anrede == "ja") echo "selected"; else echo ""; ?>>Herr</option>
+										<option value="Frau" <?php  if($anrede == "ja") echo "selected"; else echo ""; ?>>Frau</option>										
 									</select>  
                                     <span class="help-block"><br></span> 
                                     
@@ -258,8 +300,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                                                            
                                     <span>Geschlecht</span>
 							        <select class="form-control" name="geschlecht">
-										<option value="männlich">männlich</option>
-										<option value="weiblich">weiblich</option>										
+										<option value="männlich" <?php  if($geschlecht == "M" || $geschlecht == "mänlich") echo "selected"; else echo ""; ?>>männlich</option>
+										<option value="weiblich" <?php  if($geschlecht == "W" || $geschlecht == "weiblich") echo "selected"; else echo ""; ?>>weiblich</option>										
 									</select>
 									<span class="help-block"><br></span>
 
@@ -280,10 +322,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
                                     <span>Familienstand</span>
 							        <select class="form-control" name="familienstand">
-										<option value="Ledig">Ledig</option>
-										<option value="Verheiratet">Verheiratet</option>		
-                                        <option value="Geschieden">Geschieden</option>	
-                                        <option value="Verwitwet">Verwitwet</option>									
+										<option value="Ledig" <?php  if($familienstand == "ja") echo "selected"; else echo ""; ?>>Ledig</option>
+										<option value="Verheiratet" <?php  if($familienstand == "ja") echo "selected"; else echo ""; ?>>Verheiratet</option>		
+                                        <option value="Geschieden" <?php  if($familienstand == "ja") echo "selected"; else echo ""; ?>>Geschieden</option>	
+                                        <option value="Verwitwet" <?php  if($familienstand == "ja") echo "selected"; else echo ""; ?>>Verwitwet</option>									
 									</select>  
                                     <span class="help-block"><br></span> 
 
@@ -307,9 +349,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                                                         
                                     <span>Position</span>
 							        <select class="form-control" name="position">
-										<option value="Management">Management</option>
-										<option value="Erziehung">Erziehung</option>	
-                                        <option value="Sonstige">Sonstige</option>										
+										<option value="Management" <?php  if($position == "ja") echo "selected"; else echo ""; ?>>Management</option>
+										<option value="Erziehung" <?php  if($position == "ja") echo "selected"; else echo ""; ?>>Erziehung</option>	
+                                        <option value="Sonstige" <?php  if($position == "ja") echo "selected"; else echo ""; ?>>Sonstige</option>										
 									</select>  
                                     <span class="help-block"><br></span>   
                                 </div>
@@ -345,8 +387,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
                                     <span>Standort</span>
                                     <select class="form-control" name="standort">
-										<option value="1">testeinrichtung</option>
-										<option value="2">testeinrichtung2</option>										
+										<option value="1" <?php  if($standort == "ja") echo "selected"; else echo ""; ?>>testeinrichtung</option>
+										<option value="2" <?php  if($standort == "ja") echo "selected"; else echo ""; ?>>testeinrichtung2</option>										
 									</select>
 									<span class="help-block"><br></span>
 
@@ -361,7 +403,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 </div>
 					        </div>
                             <br>
-                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Neu Anlegen</button>
+                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
                         </form>
 						</div>
 					</div>
