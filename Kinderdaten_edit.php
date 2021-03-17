@@ -31,13 +31,13 @@ $gruppe = "";
 
 if(isset($_COOKIE["tabellenName"]))
 {
-	$tabelenName = $_COOKIE['tabellenName'];
-	$tabelenID = $_COOKIE['tabellenID'];
+	$tabellenName = $_COOKIE['tabellenName'];
+	$tabellenID = $_COOKIE['tabellenID'];
 }
 
 
  // Prepare an insert statement
-$sql = "SELECT * FROM $tabelenName WHERE KindID = '$tabelenID'";
+$sql = "SELECT * FROM $tabellenName WHERE KindID = '$tabellenID'";
 $result = mysqli_query($link, $sql);
 
 if (mysqli_num_rows($result) > 0) 
@@ -98,51 +98,76 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		
 
 
-         
-        if($stmt = mysqli_prepare($link, $sql))
+        if(isset($_POST["dbName"]))
 		{
-			
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssssssssssssssii",  $param_nachname, $param_vorname,
-             $param_geschlecht, $param_geburtsdatum, $param_einschulung, $param_aufnahmedatum, $param_gruppe,
-              $param_geburtsort, $param_konfession, $param_nationalität, $param_deutsch, $param_strasse,
-               $param_hausnummer, $param_telefon, $param_plz, $param_ort, $param_standort, $param_KindID);
+			if($stmt = mysqli_prepare($link, $sql))
+			{
+				
+				// Bind variables to the prepared statement as parameters
+				mysqli_stmt_bind_param($stmt, "ssssssssssssssssii",  $param_nachname, $param_vorname,
+				 $param_geschlecht, $param_geburtsdatum, $param_einschulung, $param_aufnahmedatum, $param_gruppe,
+				  $param_geburtsort, $param_konfession, $param_nationalität, $param_deutsch, $param_strasse,
+				   $param_hausnummer, $param_telefon, $param_plz, $param_ort, $param_standort, $param_KindID);
+	
+		
+	
+				// Set parameters
+				$param_vorname = $vorname;
+				$param_nachname = $nachname;
+				$param_geschlecht = $geschlecht;
+				$param_geburtsdatum = $geburtsdatum;
+				$param_geburtsort = $geburtsort;
+				$param_aufnahmedatum = $aufnahmedatum;
+				$param_konfession = $konfession;
+				$param_nationalität = $nationalität;
+				$param_deutsch = $deutsch;
+				$param_strasse = $strasse;
+				$param_hausnummer = $hausnummer;
+				$param_plz = $plz;
+				$param_ort = $ort;
+				$param_telefon = $telefon;
+				$param_einschulung = $einschulung;
+				$param_gruppe = $gruppe;
+				$param_standort = $standort;
+				$param_KindID = $tabellenID;
+				
+				// Attempt to execute the prepared statement
+				if(mysqli_stmt_execute($stmt)){
+	
+					header("location: tabellendaten_auflisten.php");
+					exit();
+	
+				} else{
+					echo "Etwas ist schief gelaufen.";
+				}
+	
+				// Close statement
+				mysqli_stmt_close($stmt);
+			}	
+		} 
+        
+	}
 
-            echo "hallo";
+	if(isset($_POST["delete"]))
+    {
+        $sql = "DELETE FROM $tabellenName WHERE KindID = '$tabellenID'";
 
-            // Set parameters
-            $param_vorname = $vorname;
-            $param_nachname = $nachname;
-            $param_geschlecht = $geschlecht;
-            $param_geburtsdatum = $geburtsdatum;
-            $param_geburtsort = $geburtsort;
-            $param_aufnahmedatum = $aufnahmedatum;
-            $param_konfession = $konfession;
-            $param_nationalität = $nationalität;
-            $param_deutsch = $deutsch;
-            $param_strasse = $strasse;
-            $param_hausnummer = $hausnummer;
-            $param_plz = $plz;
-            $param_ort = $ort;
-            $param_telefon = $telefon;
-            $param_einschulung = $einschulung;
-            $param_gruppe = $gruppe;
-            $param_standort = $standort;
-			$param_KindID = $tabelenID;
-            
+        if($stmt = mysqli_prepare($link, $sql))
+        {
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-				            
+               
                 header("location: tabellendaten_auflisten.php");
 				exit();
+
             } else{
                 echo "Etwas ist schief gelaufen.";
             }
 
             // Close statement
             mysqli_stmt_close($stmt);
-        }	
-	}
+        }
+    }
     
     // Close connection
     mysqli_close($link);
@@ -174,84 +199,45 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	<!-- WRAPPER -->
 	<div id="wrapper">
 		<!-- NAVBAR -->
-		<nav class="navbar navbar-default navbar-fixed-top">
+		<!-- <nav class="navbar navbar-default navbar-fixed-top">
 			<div class="brand">
-				<a href="index.html"><img src="assets/img/logo_nav.png" alt="VP IT Logo" class="img-responsive logo"></a>
+				<a href="tabellendaten_Auflisten.php"><img src="assets/img/logo_nav.PNG" alt="VP-IT Logo" class="img-responsive logo"></a>
 			</div>
 			<div class="container-fluid">
 				<div class="navbar-btn">
 					<button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-arrow-left-circle"></i></button>
 				</div>
 				<form class="navbar-form navbar-left">
-					<div class="input-group">
-						<input type="text" value="" class="form-control" placeholder="Search dashboard...">
-						<span class="input-group-btn"><button type="button" class="btn btn-primary">Go</button></span>
-					</div>
+					
 				</form>
 				
 				<div id="navbar-menu">
-					<ul class="nav navbar-nav navbar-right">
+					<ul class="nav navbar-nav navbar-right">						
+						
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown">
-								<i class="lnr lnr-alarm"></i>
-								<span class="badge bg-danger">5</span>
-							</a>
-							<ul class="dropdown-menu notifications">
-								<li><a href="#" class="notification-item"><span class="dot bg-warning"></span>System space is almost full</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-danger"></span>You have 9 unfinished tasks</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-success"></span>Monthly report is available</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-warning"></span>Weekly meeting in 1 hour</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-success"></span>Your request has been approved</a></li>
-								<li><a href="#" class="more">See all notifications</a></li>
-							</ul>
-						</li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="lnr lnr-question-circle"></i> <span>Help</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="assets/img/user.png" class="img-circle" alt=""> <span><?php echo $username ?></span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
 							<ul class="dropdown-menu">
-								<li><a href="#">Basic Use</a></li>
-								<li><a href="#">Working With Data</a></li>
-								<li><a href="#">Security</a></li>
-								<li><a href="#">Troubleshooting</a></li>
+								<li><a href="pw-reset.php"><i class="lnr lnr-cog"></i> <span>PW Ändern</span></a></li>
+								<li><a href="assets/php/logout.php"><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
 							</ul>
 						</li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="assets/img/user.png" class="img-circle" alt="Avatar"> <span>Samuel</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
-							<ul class="dropdown-menu">
-								<li><a href="#"><i class="lnr lnr-user"></i> <span>My Profile</span></a></li>
-								<li><a href="#"><i class="lnr lnr-envelope"></i> <span>Message</span></a></li>
-								<li><a href="#"><i class="lnr lnr-cog"></i> <span>Settings</span></a></li>
-								<li><a href="#"><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
-							</ul>
-						</li>
+						
 					</ul>
 				</div>
 			</div>
-		</nav> 
+		</nav> -->
 		<!-- END NAVBAR -->
 		<!-- LEFT SIDEBAR -->
 		<div id="sidebar-nav" class="sidebar">
 			<div class="sidebar-scroll">
 				<nav>
 					<ul class="nav">
-						<li><a href="index.php" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+						<!-- <li><a href="index.php" class="active"><i class="lnr lnr-home"></i> <span>Startseite</span></a></li> -->
+						<li><a href="tabellendaten_Auflisten.php" class=""><i class="fa fa-database"></i> <span>Daten</span></a></li>
 						<li><a href="kind_neu.php" class=""><i class="lnr lnr-users"></i> <span>Kind hinzufügen</span></a></li>
-						<li><a href="elements.html" class=""><i class="lnr lnr-code"></i> <span>Elements</span></a></li>
-						<li><a href="charts.html" class=""><i class="lnr lnr-chart-bars"></i> <span>Charts</span></a></li>
-						<li><a href="panels.html" class=""><i class="lnr lnr-cog"></i> <span>Panels</span></a></li>
-						<li><a href="notifications.html" class=""><i class="lnr lnr-alarm"></i> <span>Notifications</span></a></li>
-						<li>
-							<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Pages</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-							<div id="subPages" class="collapse ">
-								<ul class="nav">
-									<li><a href="page-profile.html" class="">Profile</a></li>
-									<li><a href="page-login.php" class="">Login</a></li>
-									<li><a href="page-lockscreen.html" class="">Lockscreen</a></li>
-								</ul>
-							</div>
-						</li>
-						<li><a href="tables.html" class=""><i class="lnr lnr-dice"></i> <span>Tables</span></a></li>
-						<li><a href="typography.html" class=""><i class="lnr lnr-text-format"></i> <span>Typography</span></a></li>
-						<li><a href="icons.html" class=""><i class="lnr lnr-linearicons"></i> <span>Icons</span></a></li>
+						<li><a href="eltern_neu.php" class=""><i class="lnr lnr-users"></i> <span>Vormund hinzufügen</span></a></li>
+						<li><a href="mitarbeiter_neu.php" class=""><i class="lnr lnr-users"></i> <span>Mitarbeiter hinzufügen</span></a></li>
+						<li><a href="standort_neu.php" class=""><i class="lnr lnr-users"></i> <span>Standort hinzufügen</span></a></li>						
 						<li><a href="Benutzer_Anlegen.php" class=""><i class="lnr lnr-user"></i> <span>Benutzer Anlegen</span></a></li>
 					</ul>
 				</nav>
@@ -361,7 +347,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 </div>
 					        </div>
                             <br>
-                            <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
+                            <div class="row">
+						        <div class="col-md-6">
+                                    <button type="submit" name="dbName" class="btn btn-primary btn-block" value="submit">Ändern</button>
+                                 </div>
+                                <div class="col-md-6">
+                                    <button type="submit" name="delete" class="btn btn-primary btn-block" value="submit">Löschen</button>
+                                </div>
+                            </div>
                         </form>
 						</div>
 					</div>
@@ -374,7 +367,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		<div class="clearfix"></div>
 		<footer>
 			<div class="container-fluid">
-				<p class="copyright">&copy; 2021 <a href="VP-IT.com" target="_blank">VP-IT</a>. All Rights Reserved.</p>
+				<p class="copyright">&copy; 2021 <a href="https://github.com/1-XanXus-0/Kita-Verwaltungssoftware" target="_blank">VP-IT</a>. All Rights Reserved.</p>
 			</div>
 		</footer>
 	</div>
