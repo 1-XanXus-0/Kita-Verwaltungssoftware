@@ -8,6 +8,7 @@ require_once "assets/php/config.php";
  
 // Define variables and initialize with empty values
 $tabellenName = "Zahlungsdaten";
+$outputTextField = "";
 
 
 $month = '';
@@ -74,7 +75,8 @@ while($row = mysqli_fetch_assoc($result)) {
 // $monthArr = array("Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez");
 
 // Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
+if($_SERVER["REQUEST_METHOD"] == "POST")
+{
 
     
 	// Button-Funktion
@@ -125,12 +127,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	
 	}
 
-
-        
-    
     // Close connection
     mysqli_close($link);
 }
+
+// Creating searching fields
+$outputTextField = "<div class='col-md-6'>
+							<span>Vorname</span>
+							<input type='text' name='vorname' class='form-control' value='$filterValue1'>
+							<span class='help-block'><br></span>
+						</div>
+						<div class='col-md-6'>
+							<span>Nachname</span>
+							<input type='text' name='nachname' class='form-control' value='$filterValue2'>
+							<span class='help-block'><br></span>
+						</div>";
 ?>
  
  <!doctype html>
@@ -247,6 +258,32 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			<div class="main-content">
 				<div class="container-fluid">
 					<h3 class="page-title"><?php echo $tabellenName ?></h3>
+					<div class="row">
+						<!-- PANEL NO PADDING -->
+						<div class='col-md-10'>
+							<div class="panel">
+								<div class="panel-heading">
+									<h5 class="panel-title">Such Optionen</h3>
+									<div class="right">
+										<button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+									</div>
+								</div>
+								<div class="panel-body no-padding">								
+									<div class="padding-top-10">
+									<form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+										<div class="row">	
+											<div class='col-md-10'>					
+												<?php  echo $outputTextField; ?>
+											</div>	
+										</div>				
+										<button type="submit" name="dbName" class="btn btn-primary btn-block" value="<?php echo $tabellenName; ?>">Filtern</button>
+									
+									</form>
+									</div>								
+								</div>
+							</div>
+						</div>
+					</div>
 					<div class="row">
                     
 							<!-- TABLE HOVER -->

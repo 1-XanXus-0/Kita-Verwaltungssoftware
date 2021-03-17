@@ -138,7 +138,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 							<form class="form-auth-small" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
 								<div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
 									<label for="signin-email" class="control-label sr-only">Benutzername</label>
-									<input type="text" name="signin-email" class="form-control" id="signin-email" placeholder="Benutzername" value="<?php if(!empty($username)) echo $username; else{ echo $_COOKIE["username"];} ?>">
+									<input type="text" name="signin-email" class="form-control" id="signin-email" placeholder="Benutzername" value="<?php if(!empty($username)) echo $username; elseif(isset($_COOKIE["username"])) echo $_COOKIE["username"]; else echo ""; ?>">
 									<span class="help-block"><?php echo $username_err; ?></span>
 								</div>
 								<div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
