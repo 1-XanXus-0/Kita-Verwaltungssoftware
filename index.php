@@ -72,6 +72,7 @@ require("assets/php/checkLogInState.php");
 						<li><a href="eltern_neu.php" class=""><i class="lnr lnr-users"></i> <span>Vormund hinzufügen</span></a></li>
 						<li><a href="mitarbeiter_neu.php" class=""><i class="lnr lnr-users"></i> <span>Mitarbeiter hinzufügen</span></a></li>
 						<li><a href="standort_neu.php" class=""><i class="lnr lnr-users"></i> <span>Standort hinzufügen</span></a></li>						
+						<li><a href="zahlungsdaten_edit.php" class=""><i class="fa fa-credit-card"></i> <span>Beitragsübersicht</span></a></li>	
 						<li><a href="Benutzer_Anlegen.php" class=""><i class="lnr lnr-user"></i> <span>Benutzer Anlegen</span></a></li>
 					</ul>
 				</nav>

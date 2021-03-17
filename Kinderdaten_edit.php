@@ -199,7 +199,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	<!-- WRAPPER -->
 	<div id="wrapper">
 		<!-- NAVBAR -->
-		<!-- <nav class="navbar navbar-default navbar-fixed-top">
+		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="brand">
 				<a href="tabellendaten_Auflisten.php"><img src="assets/img/logo_nav.PNG" alt="VP-IT Logo" class="img-responsive logo"></a>
 			</div>
@@ -225,7 +225,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					</ul>
 				</div>
 			</div>
-		</nav> -->
+		</nav>
 		<!-- END NAVBAR -->
 		<!-- LEFT SIDEBAR -->
 		<div id="sidebar-nav" class="sidebar">
@@ -238,6 +238,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 						<li><a href="eltern_neu.php" class=""><i class="lnr lnr-users"></i> <span>Vormund hinzufügen</span></a></li>
 						<li><a href="mitarbeiter_neu.php" class=""><i class="lnr lnr-users"></i> <span>Mitarbeiter hinzufügen</span></a></li>
 						<li><a href="standort_neu.php" class=""><i class="lnr lnr-users"></i> <span>Standort hinzufügen</span></a></li>						
+						<li><a href="zahlungsdaten_edit.php" class=""><i class="fa fa-credit-card"></i> <span>Beitragsübersicht</span></a></li>	
 						<li><a href="Benutzer_Anlegen.php" class=""><i class="lnr lnr-user"></i> <span>Benutzer Anlegen</span></a></li>
 					</ul>
 				</nav>

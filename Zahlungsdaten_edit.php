@@ -1,7 +1,7 @@
 <?php
 
 // Include logged in state check
-// require("assets/php/checkLogInState.php");
+require("assets/php/checkLogInState.php");
 
 // Include config file
 require_once "assets/php/config.php";
@@ -13,7 +13,11 @@ $outputTextField = "";
 
 $month = '';
 $id = '';
-$toggle = '';			
+$toggle = '';	
+
+$whereStmt = '';
+$filterValue1 = '';
+$filterValue2 = '';
             
 
 // Prepare an insert statement
@@ -32,52 +36,29 @@ while($row = $query->fetch_assoc()){
 $columnArr = array_column($result, 'COLUMN_NAME');
 // array_shift($columnArr);
 
-// Generating table header
-$sql = "SELECT * FROM zahlungsdaten";
-$result = mysqli_query($link, $sql);
-
-foreach($columnArr as $key => $var)
-
-if( ($key !== 0)) {
-    $outputColNames .= "<th>" .$var . "</th>";
-}   
-
-// output data of each row
-while($row = mysqli_fetch_assoc($result)) {
-	
-	$valueDump = $row["$columnArr[0]"];
-
-	foreach($columnArr as $key => $var)
-	{
-		if( ($key !== 0)) {
-		if( ($key > 4) && ($key < 17) ) {
-			if($row["$var"]=="bezahlt") {
-				$output .= '<td><button type="submit" class="btn btn-success" name="toggle" value="' .$var .',' .$valueDump .',' .$row["$var"] . '">BEZAHLT</button></td>';
-			} else if($row["$var"]=="nicht bezahlt") {
-				$output .= '<td><button type="submit" class="btn btn-danger"  name="toggle"  value="' .$var .',' .$valueDump .',' .$row["$var"] . '">OFFEN</button></td>';
-			} else {
-			$output .= "<td>" . $row["$var"] . "</td>";
-			}	
-		} else {
-			$output .= "<td>" . $row["$var"] . "</td>";
-		}
-		}
-
-	}
-    $output .= "</tr>";
-}
-
-
-
-
-
-// Month Names Array
-// $monthArr = array("Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez");
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST")
 {
 
+	//Creating the WHERE statement
+	if(!empty($_POST["vorname"]) && !empty($_POST["nachname"]))
+	{
+		$whereStmt = "WHERE Vorname = '" .$_POST["vorname"] . "'AND Nachname =  '" . $_POST["nachname"] . "'";
+		$filterValue1 = $_POST['vorname'];
+		$filterValue2 = $_POST['nachname'];
+	}
+	else if(!empty($_POST["vorname"]))
+	{
+		$whereStmt = "WHERE Vorname = '" .$_POST["vorname"] . "'";
+		$filterValue1 = $_POST['vorname'];
+	}
+	else if(!empty($_POST["nachname"]))
+	{
+		$whereStmt = "WHERE Nachname = '" .$_POST["nachname"] . "'";
+		$filterValue2 = $_POST['nachname'];
+	}
+	//echo $whereStmt;
     
 	// Button-Funktion
 	if (isset($_POST["toggle"])) 
@@ -127,9 +108,43 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
 	
 	}
 
-    // Close connection
-    mysqli_close($link);
+    
 }
+
+// Generating table header
+$sql = "SELECT * FROM zahlungsdaten $whereStmt";
+$result = mysqli_query($link, $sql);
+foreach($columnArr as $key => $var)
+
+if( ($key !== 0)) {
+    $outputColNames .= "<th>" .$var . "</th>";
+}   
+
+// output data of each row
+while($row = mysqli_fetch_assoc($result)) {
+	
+	$valueDump = $row["$columnArr[0]"];
+
+	foreach($columnArr as $key => $var)
+	{
+		if( ($key !== 0)) {
+		if( ($key > 4) && ($key < 17) ) {
+			if($row["$var"]=="bezahlt") {
+				$output .= '<td><button type="submit" class="btn btn-success" name="toggle" value="' .$var .',' .$valueDump .',' .$row["$var"] . '">BEZAHLT</button></td>';
+			} else if($row["$var"]=="nicht bezahlt") {
+				$output .= '<td><button type="submit" class="btn btn-danger"  name="toggle"  value="' .$var .',' .$valueDump .',' .$row["$var"] . '">OFFEN</button></td>';
+			} else {
+			$output .= "<td>" . $row["$var"] . "</td>";
+			}	
+		} else {
+			$output .= "<td>" . $row["$var"] . "</td>";
+		}
+		}
+
+	}
+    $output .= "</tr>";
+}
+
 
 // Creating searching fields
 $outputTextField = "<div class='col-md-6'>
@@ -142,6 +157,9 @@ $outputTextField = "<div class='col-md-6'>
 							<input type='text' name='nachname' class='form-control' value='$filterValue2'>
 							<span class='help-block'><br></span>
 						</div>";
+
+// Close connection
+mysqli_close($link);
 ?>
  
  <!doctype html>
@@ -170,83 +188,47 @@ $outputTextField = "<div class='col-md-6'>
 	<!-- WRAPPER -->
 	<div id="wrapper">
 		<!-- NAVBAR -->
-		<!-- <nav class="navbar navbar-default navbar-fixed-top">
+		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="brand">
-				<a href="index.php"><img src="assets/img/logo_nav.PNG" alt="VP-IT Logo" class="img-responsive logo"></a>
+				<a href="tabellendaten_Auflisten.php"><img src="assets/img/logo_nav.PNG" alt="VP-IT Logo" class="img-responsive logo"></a>
 			</div>
 			<div class="container-fluid">
 				<div class="navbar-btn">
 					<button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-arrow-left-circle"></i></button>
 				</div>
 				<form class="navbar-form navbar-left">
-					<div class="input-group">
-						<input type="text" value="" class="form-control" placeholder="Search dashboard...">
-						<span class="input-group-btn"><button type="button" class="btn btn-primary">Go</button></span>
-					</div>
+					
 				</form>
+				
 				<div id="navbar-menu">
-					<ul class="nav navbar-nav navbar-right">
+					<ul class="nav navbar-nav navbar-right">						
+						
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown">
-								<i class="lnr lnr-alarm"></i>
-								<span class="badge bg-danger">5</span>
-							</a>
-							<ul class="dropdown-menu notifications">
-								<li><a href="#" class="notification-item"><span class="dot bg-warning"></span>System space is almost full</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-danger"></span>You have 9 unfinished tasks</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-success"></span>Monthly report is available</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-warning"></span>Weekly meeting in 1 hour</a></li>
-								<li><a href="#" class="notification-item"><span class="dot bg-success"></span>Your request has been approved</a></li>
-								<li><a href="#" class="more">See all notifications</a></li>
-							</ul>
-						</li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="lnr lnr-question-circle"></i> <span>Help</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="assets/img/user.png" class="img-circle" alt=""> <span><?php echo $username ?></span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
 							<ul class="dropdown-menu">
-								<li><a href="#">Basic Use</a></li>
-								<li><a href="#">Working With Data</a></li>
-								<li><a href="#">Security</a></li>
-								<li><a href="#">Troubleshooting</a></li>
-							</ul>
-						</li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="assets/img/user.png" class="img-circle" alt="Avatar"> <span><?php echo $username ?></span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
-							<ul class="dropdown-menu">
-								<li><a href="#"><i class="lnr lnr-user"></i> <span>My Profile</span></a></li>
-								<li><a href="#"><i class="lnr lnr-envelope"></i> <span>Message</span></a></li>
 								<li><a href="pw-reset.php"><i class="lnr lnr-cog"></i> <span>PW Ändern</span></a></li>
 								<li><a href="assets/php/logout.php"><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
 							</ul>
-						</li>					
+						</li>
+						
 					</ul>
 				</div>
 			</div>
-		</nav> -->
+		</nav>
 		<!-- END NAVBAR -->
 		<!-- LEFT SIDEBAR -->
 		<div id="sidebar-nav" class="sidebar">
 			<div class="sidebar-scroll">
 				<nav>
 					<ul class="nav">
-						<li><a href="index.php" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
-						<li><a href="elements.html" class=""><i class="lnr lnr-pencil"></i> <span>Elements</span></a></li>
-						<li><a href="charts.html" class=""><i class="lnr lnr-chart-bars"></i> <span>Charts</span></a></li>
-						<li><a href="panels.html" class=""><i class="lnr lnr-cog"></i> <span>Panels</span></a></li>
-						<li><a href="notifications.html" class=""><i class="lnr lnr-alarm"></i> <span>Notifications</span></a></li>
-						<li>
-							<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Pages</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-							<div id="subPages" class="collapse ">
-								<ul class="nav">
-									<li><a href="page-profile.html" class="">Profile</a></li>
-									<li><a href="page-login.php" class="">Login</a></li>
-									<li><a href="page-lockscreen.html" class="">Lockscreen</a></li>
-								</ul>
-							</div>
-						</li>
-						<li><a href="tabellendaten_auflisten.php" class="active"><i class="lnr lnr-dice"></i> <span>Daten</span></a></li>
-						<li><a href="typography.html" class=""><i class="lnr lnr-text-format"></i> <span>Typography</span></a></li>
-						<li><a href="icons.html" class=""><i class="lnr lnr-linearicons"></i> <span>Icons</span></a></li>
-                        <li><a href="Benutzer_Anlegen.php" class=""><i class="lnr lnr-user"></i> <span>Benutzer Anlegen</span></a></li>
+						<!-- <li><a href="index.php" class="active"><i class="lnr lnr-home"></i> <span>Startseite</span></a></li> -->
+						<li><a href="tabellendaten_Auflisten.php" class=""><i class="fa fa-database"></i> <span>Daten</span></a></li>
+						<li><a href="kind_neu.php" class=""><i class="lnr lnr-users"></i> <span>Kind hinzufügen</span></a></li>
+						<li><a href="eltern_neu.php" class=""><i class="lnr lnr-users"></i> <span>Vormund hinzufügen</span></a></li>
+						<li><a href="mitarbeiter_neu.php" class=""><i class="lnr lnr-users"></i> <span>Mitarbeiter hinzufügen</span></a></li>
+						<li><a href="standort_neu.php" class=""><i class="lnr lnr-users"></i> <span>Standort hinzufügen</span></a></li>						
+						<li><a href="zahlungsdaten_edit.php" class=""><i class="fa fa-credit-card"></i> <span>Beitragsübersicht</span></a></li>	
+						<li><a href="Benutzer_Anlegen.php" class=""><i class="lnr lnr-user"></i> <span>Benutzer Anlegen</span></a></li>
 					</ul>
 				</nav>
 			</div>
