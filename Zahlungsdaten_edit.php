@@ -8,8 +8,7 @@ require_once "assets/php/config.php";
  
 // Define variables and initialize with empty values
 $tabellenName = "Zahlungsdaten";
-$_SESSION["TabellenName"] = "Zahlungsdaten";
-// $_SESSION["ID"] = "ZahlungsID";
+
 
 $month = '';
 $id = '';
@@ -52,9 +51,9 @@ while($row = mysqli_fetch_assoc($result)) {
 		if( ($key !== 0)) {
 		if( ($key > 4) && ($key < 17) ) {
 			if($row["$var"]=="bezahlt") {
-				$output .= '<td><button type="button" class="btn btn-success" name="toggle" value="' .$var .',' .$row["$columnArr[0]"] .',' .$row["$var"] . '">BEZAHLT</button></td>';
+				$output .= '<td><button type="submit" class="btn btn-success" name="toggle" value="' .$var .',' .$valueDump .',' .$row["$var"] . '">BEZAHLT</button></td>';
 			} else if($row["$var"]=="nicht bezahlt") {
-				$output .= '<td><button type="button" class="btn btn-danger"  name="toggle" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">OFFEN</button></td>';
+				$output .= '<td><button type="submit" class="btn btn-danger"  name="toggle"  value="' .$var .',' .$valueDump .',' .$row["$var"] . '">OFFEN</button></td>';
 			} else {
 			$output .= "<td>" . $row["$var"] . "</td>";
 			}	
@@ -77,42 +76,40 @@ while($row = mysqli_fetch_assoc($result)) {
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-	echo test1;
     
 	// Button-Funktion
-	if (isset($_POST["toggle"])) {
+	if (isset($_POST["toggle"])) 
+	{		
 
-		echo test2;
+		$btnval = $_POST["toggle"];
+		$btnvalue = explode (',', $btnval);
+		$month = $btnvalue[0];
+		$id = $btnvalue[1];
+		$toggle = $btnvalue[2];
 
-	$btnval = $_POST["toggle"];
-	$btnvalue = explode (',', $btnval);
-	$month = $btnvalue[0];
-	$id = $btnvalue[1];
-	$toggle = $btnvalue[2];
+		if($toggle == "nicht bezahlt") 
+		{
+			$toggle = "bezahlt";
+		} 
+		else if ($toggle == "bezahlt") 
+		{
+			$toggle = "nicht bezahlt";
+		}
 
-	if($toggle=="nicht bezahlt") {
-		$toggle = "bezahlt";
-	} else if ($toggle=="bezahlt") {
-		$toggle = "nicht bezahlt";
-	}
-	
-	}
-
-
-        // Prepare an insert statement
-        $sql = "UPDATE Zahlungsdaten SET ? = ? WHERE ZahlungsID = ?";
-
+		// Prepare an insert statement
+        $sql = "UPDATE Zahlungsdaten SET $month = ? WHERE ZahlungsID = ?";
         if($stmt = mysqli_prepare($link, $sql))
 		{
 			
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "si",  $param_month, $param_toggle, $param_id);
+            mysqli_stmt_bind_param($stmt, "si",  $param_toggle, $param_id);
 
-			            // Set parameters
-						$param_month = $month;
+			
+			            // Set parameters						
 						$param_id = $id;			
 						$param_toggle = $toggle;
-            
+
+						            
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
 				            
@@ -125,6 +122,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // Close statement
             mysqli_stmt_close($stmt);
         }
+	
+	}
+
+
+        
     
     // Close connection
     mysqli_close($link);
@@ -254,17 +256,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 								</div>
 								<div class="tabellen">
 								<div class="panel-body">
-								<form class='form-auth-small' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method='POST'>
-									<table class="table table-hover">
-										<thead>
-											<tr>
-                                                <?php echo $outputColNames;?>
-											</tr>
-										</thead>
-										<tbody>
-                                            <?php echo $output ?>
-										</tbody>
-									</table></form>
+									<form class='form-auth-small' action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method='POST'>
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<?php echo $outputColNames;?>
+												</tr>
+											</thead>
+											<tbody>
+												<?php echo $output ?>
+											</tbody>
+										</table>
+									</form>
 								</div>
 							</div>
 							</div>

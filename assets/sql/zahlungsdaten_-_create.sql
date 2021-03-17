@@ -1,0 +1,25 @@
+USE mydb;
+CREATE TABLE zahlungsdaten (
+    ZahlungsID INT NOT NULL AUTO_INCREMENT,
+    Vorname VARCHAR(50),
+    Nachname VARCHAR(50),
+    IBAN VARCHAR(50),
+    BIC VARCHAR(50),
+    Jan VARCHAR(50),
+    Feb VARCHAR(50),
+    Mar VARCHAR(50),
+    Apr VARCHAR(50),
+    Mai VARCHAR(50),
+    Jun VARCHAR(50),
+    Jul VARCHAR(50),
+    Aug VARCHAR(50),
+    Sep VARCHAR(50),
+    Okt VARCHAR(50),
+    Nov VARCHAR(50),
+    Dez VARCHAR(50),
+    KindID INT,
+    ElternID INT,
+    PRIMARY KEY (ZahlungsID),
+    FOREIGN KEY (KindID) REFERENCES kinderdaten(KindID),
+    FOREIGN KEY (ElternID) REFERENCES elterndaten(ElternID)
+);
